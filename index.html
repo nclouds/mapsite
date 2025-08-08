@@ -350,6 +350,25 @@
             font-size: 16px;
         }
         
+        .button-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .button-small {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            background: white;
+            transition: background 0.2s;
+        }
+        
+        .button-small:hover {
+            background: #f0f0f0;
+        }
+        
         @media (max-width: 768px) {
             .guide-container {
                 padding: 12px;
@@ -413,18 +432,58 @@
             renderPhases();
         }
 
-        // Load guide data from JSON file
+        window.expandAll = function() {
+            guideData.phases.forEach(phase => {
+                expandedPhases[phase.id] = true;
+            });
+            renderPhases();
+        }
+
+        window.collapseAll = function() {
+            guideData.phases.forEach(phase => {
+                expandedPhases[phase.id] = false;
+            });
+            renderPhases();
+        }
+
+        // Load guide data from JSON file or Google Doc
         async function loadGuideData() {
             try {
-                const response = await fetch('checklist-data.json');
+                // Option 1: Load from Google Doc (uncomment and add your doc ID)
+                // const GOOGLE_DOC_ID = 'YOUR_GOOGLE_DOC_ID_HERE';
+                // const url = `https://docs.google.com/document/d/${GOOGLE_DOC_ID}/export?format=txt`;
+                
+                // Option 2: Load from Google Drive direct link (if you have a shared JSON file)
+                // const url = 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE';
+                
+                // Option 3: Load from local file (default)
+                const url = 'checklist-data.json';
+                
+                const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                guideData = await response.json();
                 
-                // Initialize all phases as expanded
+                // For Google Docs export, you might need to clean the text
+                const text = await response.text();
+                
+                // Try to parse as JSON
+                try {
+                    guideData = JSON.parse(text);
+                } catch (parseError) {
+                    // If parsing fails, try to extract JSON from the document
+                    // This handles cases where Google Docs adds formatting
+                    const jsonMatch = text.match(/\{[\s\S]*\}/);
+                    if (jsonMatch) {
+                        guideData = JSON.parse(jsonMatch[0]);
+                    } else {
+                        throw parseError;
+                    }
+                }
+                
+                // Initialize all phases as collapsed (was expanded)
                 guideData.phases.forEach(phase => {
-                    expandedPhases[phase.id] = true;
+                    expandedPhases[phase.id] = false;
                 });
                 
                 initializeApp();
@@ -433,7 +492,7 @@
                     <div class="error">
                         <h2>Error Loading Guide</h2>
                         <p>${error.message}</p>
-                        <p>Please ensure checklist-data.json is in the same directory as index.html</p>
+                        <p>Please ensure the JSON source is accessible and contains valid JSON data.</p>
                     </div>
                 `;
                 console.error('Error loading guide data:', error);
@@ -543,6 +602,11 @@
                             <span class="search-icon">🔍</span>
                             <input type="text" class="search-input" placeholder="Search guide items..." 
                                    id="search-input" oninput="handleSearchInput(event)">
+                        </div>
+                        
+                        <div class="button-group">
+                            <button class="button-small" onclick="expandAll()">Expand All</button>
+                            <button class="button-small" onclick="collapseAll()">Collapse All</button>
                         </div>
                     </div>
 
