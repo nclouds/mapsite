@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "version": 0.2,
-    "lastUpdated": "2025-08-08T04:00:00.000Z"
+    "title": "MAP Migration Project Checklist",
+    "version": 0.2
   },
   "resources": [
     {
@@ -180,23 +180,26 @@
             {
               "id": "2-2",
               "text": "Strategic Consultation & Scoping",
-              "tooltip": "Collaborate with your team to understand current business objectives\nDefine migration scope and establish assessment parameters\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
+              "tooltip": "Collaborate with your team to understand current business objectives\\n\nDefine migration scope and establish assessment parameters\\n\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
               "links": [],
-              "responsible": "AE, SA"
+              "responsible": "AE, SA",
+              "required": true
             },
             {
               "id": "2-3",
               "text": "Tool-Based Discovery and Data Collection",
-              "tooltip": "Deploy industry-leading assessment tools:\n - Migration Evaluator for on-premises environment analysis\n - Cloudamize for existing cloud and hybrid environments\n - Both agentless and agent-based options available\nConduct 2-4 week performance monitoring during peak business periods\nCollect actual utilization data",
+              "tooltip": "Deploy industry-leading assessment tools:\\n\n - Migration Evaluator for on-premises environment analysis\\n\n - Cloudamize for existing cloud and hybrid environments\\n\n - Both agentless and agent-based options available\\n\nConduct 2-4 week performance monitoring during peak business periods\\n\nCollect actual utilization data",
               "links": [],
-              "responsible": "PM, OLA Partner"
+              "responsible": "PM, OLA Partner",
+              "required": true
             },
             {
               "id": "2-4",
               "text": "OLA Report & Multi-Scenario Analysis",
-              "tooltip": "Deliver a comprehensive Individual Business Case (TCO) that includes:\n - On-Premises vs. AWS Lift & Shift Scenario - Direct migration cost comparison\n - AWS Rightsized Scenario - Optimized instance sizing with potential 30% cost reduction\n - Licensing Optimization - BYOL vs. License-Included recommendations\n - Infrastructure Requirements for optimal AWS performance\nQuantified savings projections\nThe entire assessment typically takes 2-4 weeks and is designed to minimize IT resource strain while providing data-driven insights for your AWS migration strategy.",
+              "tooltip": "Deliver a comprehensive Individual Business Case (TCO) that includes:\\n\n - On-Premises vs. AWS Lift & Shift Scenario - Direct migration cost comparison\\n\n - AWS Rightsized Scenario - Optimized instance sizing with potential 30% cost reduction\\n\n - Licensing Optimization - BYOL vs. License-Included recommendations\\n\n - Infrastructure Requirements for optimal AWS performance\\n\nQuantified savings projections\\n\nThe entire assessment typically takes 2-4 weeks and is designed to minimize IT resource strain while providing data-driven insights for your AWS migration strategy.",
               "links": [],
-              "responsible": "OLA Partner"
+              "responsible": "OLA Partner",
+              "required": true
             }
           ]
         }
@@ -207,7 +210,7 @@
       "title": "Phase-3:Assess",
       "sections": [
         {
-          "title": "Assess Initiation",
+          "title": "Assess First Call",
           "applicability": [
             "map",
             "map-lite"
@@ -215,6 +218,35 @@
           "items": [
             {
               "id": "3-1",
+              "text": "First call presentation to customer",
+              "tooltip": "FIrst call with customer to present our TotalValue Migration services and go over MAP funding program.",
+              "links": [
+                {
+                  "text": "First Call Deck",
+                  "url": "https://docs.google.com/presentation/d/1F7xj7HHGZ12Dk6j1cIGNwxcG-4wDyi8wuPyApJ7poV8/edit?usp=drive_link"
+                },
+                {
+                  "text": "Customer Stories",
+                  "url": "https://docs.google.com/presentation/d/1edsaydyWI1Mtsh0vtNwgQFXc4r4gg-Dn49bT0hMCT0g/edit?usp=drive_link"
+                },
+                {
+                  "text": "One Pagers",
+                  "url": "https://drive.google.com/drive/folders/1ROZx2SJEe0a_dTk3Y4cZ-0JAlHaFmImG?usp=drive_link"
+                }
+              ],
+              "responsible": "AE"
+            }
+          ]
+        },
+        {
+          "title": "Assess Initiation",
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
+          "items": [
+            {
+              "id": "3-2",
               "text": "Create Calculator.aws",
               "tooltip": "Create an ARR estimate.  Remember that only elegible services count toward funding eligibility.",
               "links": [
@@ -226,7 +258,7 @@
               "required": true
             },
             {
-              "id": "3-2",
+              "id": "3-3",
               "text": "Create MAP Partner Scope Checklist",
               "tooltip": "This checklist must be filled out.  At the Assess phase you only need to enter the info for the Assess tab.",
               "links": [
@@ -238,7 +270,7 @@
               "required": true
             },
             {
-              "id": "3-3",
+              "id": "3-4",
               "text": "Create fund request in AWS Partner Funding Portal (APFP)",
               "tooltip": "Log into APFP and create a new MAP fund request with all required information",
               "links": [
@@ -259,7 +291,7 @@
           ],
           "items": [
             {
-              "id": "3-4",
+              "id": "3-5",
               "text": "",
               "tooltip": "",
               "links": []
@@ -273,7 +305,7 @@
           ],
           "items": [
             {
-              "id": "3-5",
+              "id": "3-6",
               "text": "Complete Migration Readiness Assessment (MRA)",
               "tooltip": "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
               "links": [
