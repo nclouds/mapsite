@@ -392,6 +392,27 @@
         let responsibleFilter = '';
         let allResponsibleParties = [];
 
+        // Define all handler functions in global scope
+        window.togglePhase = function(phaseId) {
+            expandedPhases[phaseId] = !expandedPhases[phaseId];
+            renderPhases();
+        }
+
+        window.handleProjectTypeChange = function(e) {
+            projectType = e.target.value;
+            renderPhases();
+        }
+
+        window.handleSearchInput = function(e) {
+            searchTerm = e.target.value;
+            renderPhases();
+        }
+
+        window.handleResponsibleChange = function(e) {
+            responsibleFilter = e.target.value;
+            renderPhases();
+        }
+
         // Load guide data from JSON file
         async function loadGuideData() {
             try {
@@ -642,4 +663,4 @@
         window.addEventListener('DOMContentLoaded', loadGuideData);
     </script>
 </body>
-</html> 
+</html>
