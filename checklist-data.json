@@ -1,7 +1,8 @@
 {
   "metadata": {
     "title": "MAP Migration Project Checklist",
-    "version": 0.2
+    "version": 0.2,
+    "lastUpdated": "2025-08-08T20:34:41.326Z"
   },
   "resources": [
     {
@@ -152,7 +153,16 @@
               "id": "1-10",
               "text": "Verify MAP Lite specific requirements",
               "tooltip": "Ensure project meets the streamlined requirements for MAP Lite funding",
-              "links": [],
+              "links": [
+                {
+                  "text": "OLA ISV Tooling",
+                  "url": "https://app.smartsheet.com/b/form/0eb132d36a614d4b936fb068e289a819"
+                },
+                {
+                  "text": "Program Guide",
+                  "url": "https://partnercentral.awspartner.com/partnercentral2/s/resources?Id=0698W00000setuPQAQ"
+                }
+              ],
               "responsible": "AE"
             }
           ]
@@ -174,19 +184,70 @@
               "id": "2-1",
               "text": "Approve TotalValue Optimization Blueprint with Customer",
               "tooltip": "The OLA is not required but may be beneficial to the sales process. Both nClouds and the OLA partner are funded by AWS.",
-              "links": [],
+              "links": [
+                {
+                  "text": "Optimization Blueprint Deck",
+                  "url": "https://docs.google.com/presentation/d/1BP7hswcwQTencKDMj6W52koN52ZUJxLzosKkn4eYQQQ/edit?usp=drive_link"
+                },
+                {
+                  "text": "Azure Guide",
+                  "url": "https://drive.google.com/file/d/1G8Z-qAUbNmiskpV_V5VPAn3YoRK_nZs1/view?usp=drive_link"
+                },
+                {
+                  "text": "Funding Guide",
+                  "url": "https://drive.google.com/file/d/11JE9FpbUAKIUj9a3CZZwOpXm-wKfdkJK/view?usp=drive_link"
+                },
+                {
+                  "text": "ACE Cheat",
+                  "url": "https://docs.google.com/document/d/1B8smADy1V0_iObxdbzeNUqxCXZ_BHTx6uEZdWYohtUw/edit?usp=drive_link"
+                }
+              ],
               "responsible": "AE"
             },
             {
               "id": "2-2",
-              "text": "Strategic Consultation & Scoping",
-              "tooltip": "Collaborate with your team to understand current business objectives\\n\nDefine migration scope and establish assessment parameters\\n\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
+              "text": "Create an ACE opportunity",
+              "tooltip": "Your ACE opp can now focus on the details that matter to you and other AWS teams. The OLA team now only requires that an ACE opp exists—no specific details needed within it.",
               "links": [],
-              "responsible": "AE, SA",
+              "responsible": "AE",
               "required": true
             },
             {
               "id": "2-3",
+              "text": "Submit request for OLA-funded ISV tooling and partner support",
+              "tooltip": "This does not change the process for requesting OLA Partner Incentive Funding (PIF)",
+              "links": [],
+              "responsible": "AE",
+              "required": true
+            }
+          ]
+        },
+        {
+          "title": "Optimization Blueprint Execution",
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
+          "items": [
+            {
+              "id": "2-4",
+              "text": "Strategic Consultation & Scoping",
+              "tooltip": "Collaborate with your team to understand current business objectives\\n\nDefine migration scope and establish assessment parameters\\n\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
+              "links": [
+                {
+                  "text": "Kickoff Deck",
+                  "url": "https://docs.google.com/presentation/d/1lGnBJRFYlQp2y1Yd5_LaDfSHSnr9oHR8DpIAn-r0cp4/edit?usp=sharing"
+                },
+                {
+                  "text": "OLA Workflow",
+                  "url": "https://docs.google.com/document/d/1H2k1j7s_63ki05xSuNLnX1XQlWp9oZMwa4YWh6dUwQo/edit?tab=t.0"
+                }
+              ],
+              "responsible": "AE, SA",
+              "required": true
+            },
+            {
+              "id": "2-5",
               "text": "Tool-Based Discovery and Data Collection",
               "tooltip": "Deploy industry-leading assessment tools:\\n\n - Migration Evaluator for on-premises environment analysis\\n\n - Cloudamize for existing cloud and hybrid environments\\n\n - Both agentless and agent-based options available\\n\nConduct 2-4 week performance monitoring during peak business periods\\n\nCollect actual utilization data",
               "links": [],
@@ -194,7 +255,7 @@
               "required": true
             },
             {
-              "id": "2-4",
+              "id": "2-6",
               "text": "OLA Report & Multi-Scenario Analysis",
               "tooltip": "Deliver a comprehensive Individual Business Case (TCO) that includes:\\n\n - On-Premises vs. AWS Lift & Shift Scenario - Direct migration cost comparison\\n\n - AWS Rightsized Scenario - Optimized instance sizing with potential 30% cost reduction\\n\n - Licensing Optimization - BYOL vs. License-Included recommendations\\n\n - Infrastructure Requirements for optimal AWS performance\\n\nQuantified savings projections\\n\nThe entire assessment typically takes 2-4 weeks and is designed to minimize IT resource strain while providing data-driven insights for your AWS migration strategy.",
               "links": [],
@@ -255,22 +316,35 @@
                   "url": "https://calculator.aws"
                 }
               ],
+              "responsible": "SA",
               "required": true
             },
             {
               "id": "3-3",
+              "text": "Coordinate gathering Relutech information",
+              "tooltip": "Relutech hardware buyback and licensing optimization can help fund the migration for the customer",
+              "links": [],
+              "responsible": "SA, Relutech"
+            },
+            {
+              "id": "3-4",
               "text": "Create MAP Partner Scope Checklist",
               "tooltip": "This checklist must be filled out.  At the Assess phase you only need to enter the info for the Assess tab.",
               "links": [
                 {
                   "text": "Partner Scope Checklist",
                   "url": "https://docs.google.com/spreadsheets/d/1JhAHEkeSMCzujkpWzUUJjBGEJU0bbcgKTf3k1ep9fYE/edit?usp=drive_link"
+                },
+                {
+                  "text": "Checklist Instructions",
+                  "url": "https://docs.google.com/document/d/1c9IJWCIn34LRNOCPnIxxUgvXqfsBCttYFSV4zOi8IWM/edit?usp=drive_link"
                 }
               ],
+              "responsible": "SA",
               "required": true
             },
             {
-              "id": "3-4",
+              "id": "3-5",
               "text": "Create fund request in AWS Partner Funding Portal (APFP)",
               "tooltip": "Log into APFP and create a new MAP fund request with all required information",
               "links": [
@@ -291,29 +365,59 @@
           ],
           "items": [
             {
-              "id": "3-5",
-              "text": "",
-              "tooltip": "",
-              "links": []
+              "id": "3-6",
+              "text": "Create SOW for MAP Assess",
+              "tooltip": "Assess is usually required and a standalone SOW.  Rarely Assess is skipped.  Also it is rare to include it in with Mobilize",
+              "links": [],
+              "responsible": "SA",
+              "required": true
             }
           ]
         },
         {
-          "title": "MAP Only ($500K-$10M ARR)",
+          "title": "Assess Execution",
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
+          "items": [
+            {
+              "id": "3-7",
+              "text": "Internal Kickoff Call",
+              "tooltip": "",
+              "links": [],
+              "responsible": "PM, SA"
+            },
+            {
+              "id": "3-8",
+              "text": "Extermal Kickoff Call",
+              "tooltip": "",
+              "links": [],
+              "responsible": "PM"
+            }
+          ]
+        },
+        {
+          "title": "Execution",
           "applicability": [
             "map"
           ],
           "items": [
             {
-              "id": "3-6",
+              "id": "3-9",
               "text": "Complete Migration Readiness Assessment (MRA)",
               "tooltip": "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
               "links": [
                 {
                   "text": "MRA Guide",
                   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
+                },
+                {
+                  "text": "[Standard] MRA Standard",
+                  "url": "https://docs.google.com/document/d/11N4hQg7z2g19lKiH4zjYlMcn5MkJKN9gC1SqIQp7eDI/edit?usp=drive_link"
                 }
               ],
+              "responsible": "PM",
               "required": true
             }
           ]
