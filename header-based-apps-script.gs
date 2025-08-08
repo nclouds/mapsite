@@ -459,6 +459,7 @@ function validateSheets() {
     ];
     
     const optionalHeaders = [
+      'responsible',
       'link_text_2', 'link_url_2',
       'link_text_3', 'link_url_3',
       'link_text_4', 'link_url_4'
@@ -474,9 +475,16 @@ function validateSheets() {
     }
     
     if (presentOptionalHeaders.length > 0) {
-      messages.push(`ℹ️ Optional link columns found: ${presentOptionalHeaders.join(', ')}`);
+      messages.push(`ℹ️ Optional columns found: ${presentOptionalHeaders.join(', ')}`);
     } else {
-      messages.push('ℹ️ No additional link columns found (link_text_2, link_url_2, etc.)');
+      messages.push('ℹ️ No optional columns found (responsible, link_text_2, link_url_2, etc.)');
+    }
+    
+    // Check for responsible column specifically
+    if (headers.includes('responsible')) {
+      messages.push('✅ Responsible column found');
+    } else if (headers.includes('Responsible')) {
+      messages.push('⚠️ Found "Responsible" column - should be lowercase "responsible"');
     }
   }
   
