@@ -460,9 +460,9 @@
                 <div class="guide-container">
                     <!-- Header -->
                     <div class="header">
-                        <h1>${guideData.metadata.title}</h1>
+                        <h1>${guideData.metadata.title || 'MAP Migration Guide'}</h1>
                         <p class="subtitle">Comprehensive guide for AWS Migration Acceleration Program projects</p>
-                        <p class="version">Version ${guideData.metadata.version} • Last Updated: ${guideData.metadata.lastUpdated}</p>
+                        <p class="version">Version ${guideData.metadata.version || '1.0'} • Last Updated: ${guideData.metadata.lastUpdated || ''}</p>
                     </div>
 
                     <!-- Controls -->
@@ -545,7 +545,6 @@
                                             ${visibleItems.map(item => `
                                                 <div class="guide-item">
                                                     <div class="item-header">
-                                                        <span class="item-number">${item.id}</span>
                                                         <div class="item-content">
                                                             <p class="item-text">
                                                                 ${item.text}
