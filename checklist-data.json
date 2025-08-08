@@ -46,7 +46,12 @@
               "id": "1-1",
               "text": "Determine migration eligibility for MAP funding",
               "tooltip": "Verify that your migration project meets AWS MAP requirements including minimum ARR thresholds and partner eligibility criteria",
-              "links": [],
+              "links": [
+                {
+                  "text": "Partner Funding Benefits",
+                  "url": "https://drive.google.com/file/d/1xOhSpZxtlp4pwdWK5JnTepQC1Z9Nyem2/view?usp=drive_link"
+                }
+              ],
               "required": true
             },
             {
@@ -55,8 +60,8 @@
               "tooltip": "Must have AWS Migration Competency or qualifying AWS Competencies/Service Delivery designations",
               "links": [
                 {
-                  "text": "Partner Eligibility Guide",
-                  "url": "https://aws.amazon.com/partners/programs/migration-acceleration-program/"
+                  "text": "Partner Funding Benefits",
+                  "url": "https://drive.google.com/file/d/1xOhSpZxtlp4pwdWK5JnTepQC1Z9Nyem2/view?usp=drive_link"
                 }
               ],
               "required": true
@@ -64,8 +69,13 @@
             {
               "id": "1-3",
               "text": "Identify customer's anticipated post-migration Annual Run Rate (ARR)",
-              "tooltip": "Calculate expected AWS spend after migration completion. MAP: $500K-$10M ARR, MAP Lite: $100K-$500K ARR",
-              "links": [],
+              "tooltip": "Calculate expected AWS spend after migration completion. MAP: $500K-$10M ARR, MAP Lite: $100K-$500K ARR. Only use of eligible services will be counted.  Use Calculator.aws to provide evidence.",
+              "links": [
+                {
+                  "text": "Calculator.aws",
+                  "url": "https://calculator.aws"
+                }
+              ],
               "required": true
             },
             {
@@ -79,7 +89,8 @@
               "id": "1-5",
               "text": "Confirm migration timeline aligns with MAP requirements",
               "tooltip": "Migration must be completed within the program timeframe (typically 12-24 months)",
-              "links": []
+              "links": [],
+              "required": true
             }
           ]
         },
@@ -164,7 +175,7 @@
       "title": "Phase-3:Assess",
       "sections": [
         {
-          "title": "Funding",
+          "title": "Assess Initiation",
           "applicability": [
             "map",
             "map-lite"
@@ -185,11 +196,11 @@
             {
               "id": "3-2",
               "text": "Create MAP Partner Scope Checklist",
-              "tooltip": "",
+              "tooltip": "This checklist must be filled out.  At the Assess phase you only need to enter the info for the Assess tab.",
               "links": [
                 {
-                  "text": "APFP Portal",
-                  "url": "https://partnercentral.awspartner.com/"
+                  "text": "Partner Scope Checklist",
+                  "url": "https://docs.google.com/spreadsheets/d/1JhAHEkeSMCzujkpWzUUJjBGEJU0bbcgKTf3k1ep9fYE/edit?usp=drive_link"
                 }
               ],
               "required": true
@@ -220,6 +231,26 @@
               "text": "",
               "tooltip": "",
               "links": []
+            }
+          ]
+        },
+        {
+          "title": "MAP Only ($500K-$10M ARR)",
+          "applicability": [
+            "map"
+          ],
+          "items": [
+            {
+              "id": "3-5",
+              "text": "Complete Migration Readiness Assessment (MRA)",
+              "tooltip": "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
+              "links": [
+                {
+                  "text": "MRA Guide",
+                  "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
+                }
+              ],
+              "required": true
             }
           ]
         }

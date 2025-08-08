@@ -389,6 +389,8 @@
         let expandedPhases = {};
         let projectType = 'both';
         let searchTerm = '';
+        let responsibleFilter = '';
+        let allResponsibleParties = [];
 
         // Load guide data from JSON file
         async function loadGuideData() {
@@ -419,7 +421,30 @@
 
         // Initialize the application
         function initializeApp() {
+            // Extract all unique responsible parties
+            extractResponsibleParties();
             renderApp();
+        }
+        
+        // Extract unique responsible parties from the data
+        function extractResponsibleParties() {
+            const parties = new Set();
+            
+            guideData.phases.forEach(phase => {
+                phase.sections.forEach(section => {
+                    section.items.forEach(item => {
+                        if (item.responsible) {
+                            // Split by comma and trim each party
+                            const itemParties = item.responsible.split(',').map(p => p.trim());
+                            itemParties.forEach(party => {
+                                if (party) parties.add(party);
+                            });
+                        }
+                    });
+                });
+            });
+            
+            allResponsibleParties = Array.from(parties).sort();
         }
 
         // Check if section should be shown
@@ -430,11 +455,23 @@
 
         // Check if item should be shown
         function shouldShowItem(item) {
-            if (!searchTerm) return true;
-            const searchLower = searchTerm.toLowerCase();
-            return item.text.toLowerCase().includes(searchLower) ||
-                   (item.tooltip && item.tooltip.toLowerCase().includes(searchLower)) ||
-                   (item.links && item.links.some(link => link.text.toLowerCase().includes(searchLower)));
+            // Check search term
+            if (searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
+                const matchesSearch = item.text.toLowerCase().includes(searchLower) ||
+                       (item.tooltip && item.tooltip.toLowerCase().includes(searchLower)) ||
+                       (item.links && item.links.some(link => link.text.toLowerCase().includes(searchLower)));
+                if (!matchesSearch) return false;
+            }
+            
+            // Check responsible filter
+            if (responsibleFilter) {
+                if (!item.responsible) return false;
+                const responsibleParties = item.responsible.split(',').map(p => p.trim());
+                if (!responsibleParties.includes(responsibleFilter)) return false;
+            }
+            
+            return true;
         }
 
         // Toggle phase expansion
@@ -472,6 +509,13 @@
                             <option value="both">All Items</option>
                             <option value="map">MAP Only ($500K-$10M)</option>
                             <option value="map-lite">MAP Lite ($100K-$500K)</option>
+                        </select>
+                        
+                        <select class="project-selector" id="responsible-filter" onchange="handleResponsibleChange(event)">
+                            <option value="">All Responsible Parties</option>
+                            ${allResponsibleParties.map(party => 
+                                `<option value="${party}">${party}</option>`
+                            ).join('')}
                         </select>
                         
                         <div class="search-box">
@@ -550,6 +594,7 @@
                                                         <div class="item-content">
                                                             <p class="item-text">
                                                                 ${item.text}
+                                                                ${item.responsible ? `<span style="color: #666; font-weight: normal;"> (${item.responsible})</span>` : ''}
                                                                 ${item.required ? '<span class="required-badge">Required</span>' : ''}
                                                                 ${item.tooltip ? `
                                                                     <span class="tooltip">
@@ -597,4 +642,4 @@
         window.addEventListener('DOMContentLoaded', loadGuideData);
     </script>
 </body>
-</html>
+</html> 
