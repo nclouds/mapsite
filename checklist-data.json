@@ -1,34 +1,33 @@
 {
   "metadata": {
-    "title": "MAP Migration Project Checklist",
-    "version": "1.0",
-    "lastUpdated": "2024-01-15"
+    "version": 1,
+    "lastUpdated": "2024-01-05T05:00:00.000Z"
   },
   "resources": [
     {
       "title": "AWS Partner Funding Portal (APFP)",
-      "url": "https://partnercentral.awspartner.com/",
-      "description": "Primary portal for fund requests and claims"
+      "url": "Primary portal for fund requests and claims",
+      "description": ""
     },
     {
       "title": "MAP Terms & Conditions",
-      "url": "https://aws.amazon.com/migration-acceleration-program/terms",
-      "description": "Official program terms"
+      "url": "Official program terms and conditions",
+      "description": "https://aws.amazon.com/migration-acceleration-program/terms"
     },
     {
       "title": "Migration Readiness Assessment Guide",
-      "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html",
-      "description": "Complete MRA documentation"
+      "url": "Complete MRA documentation",
+      "description": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
     },
     {
       "title": "MAP Included Services List",
-      "url": "https://aws.amazon.com/migration-acceleration-program/included-services",
-      "description": "AWS services eligible for MAP funding"
+      "url": "List of AWS services eligible for MAP funding",
+      "description": "https://s3-us-west-2.amazonaws.com/map-2.0-customer-documentation/included-services/MAP_Included_Services_List.pdf"
     },
     {
-      "title": "Partner Analytics Dashboard",
-      "url": "https://partnercentral.awspartner.com/analytics",
-      "description": "Track migration spend and milestones"
+      "title": "AWS Pricing Calculator",
+      "url": "Calculate your anticipated post-migration ARR",
+      "description": "https://calculator.aws/"
     }
   ],
   "phases": [
@@ -38,43 +37,46 @@
       "sections": [
         {
           "title": "Both MAP & MAP Lite",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "1-1",
+              "id": "2025-01-01T05:00:00.000Z",
               "text": "Determine migration eligibility for MAP funding",
               "tooltip": "Verify that your migration project meets AWS MAP requirements including minimum ARR thresholds and partner eligibility criteria",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "1-2",
+              "id": "2025-01-02T05:00:00.000Z",
               "text": "Confirm partner eligibility requirements are met",
               "tooltip": "Must have AWS Migration Competency or qualifying AWS Competencies/Service Delivery designations",
-              "required": true,
               "links": [
                 {
                   "text": "Partner Eligibility Guide",
                   "url": "https://aws.amazon.com/partners/programs/migration-acceleration-program/"
                 }
-              ]
+              ],
+              "required": true
             },
             {
-              "id": "1-3",
+              "id": "2025-01-03T05:00:00.000Z",
               "text": "Identify customer's anticipated post-migration Annual Run Rate (ARR)",
               "tooltip": "Calculate expected AWS spend after migration completion. MAP: $500K-$10M ARR, MAP Lite: $100K-$500K ARR",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "1-4",
+              "id": "2025-01-04T05:00:00.000Z",
               "text": "Verify customer has not previously received MAP funding",
               "tooltip": "Customers can only receive MAP funding once. Check with AWS team if unsure",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "1-5",
+              "id": "2025-01-05T05:00:00.000Z",
               "text": "Confirm migration timeline aligns with MAP requirements",
               "tooltip": "Migration must be completed within the program timeframe (typically 12-24 months)",
               "links": []
@@ -83,29 +85,31 @@
         },
         {
           "title": "MAP Only ($500K-$10M ARR)",
-          "applicability": ["map"],
+          "applicability": [
+            "map"
+          ],
           "items": [
             {
-              "id": "1-6",
+              "id": "2025-01-06T05:00:00.000Z",
               "text": "Complete Migration Readiness Assessment (MRA)",
               "tooltip": "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
-              "required": true,
               "links": [
                 {
                   "text": "MRA Guide",
                   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
                 }
-              ]
+              ],
+              "required": true
             },
             {
-              "id": "1-7",
+              "id": "2025-01-07T05:00:00.000Z",
               "text": "Document MRA findings and recommendations",
               "tooltip": "Create comprehensive report of gaps identified and remediation plans",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "1-8",
+              "id": "2025-01-08T05:00:00.000Z",
               "text": "Share MRA results with customer stakeholders",
               "tooltip": "Present findings to executive sponsors and technical teams",
               "links": []
@@ -114,16 +118,18 @@
         },
         {
           "title": "MAP Lite Only ($100K-$500K ARR)",
-          "applicability": ["map-lite"],
+          "applicability": [
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "1-9",
+              "id": "2025-01-09T05:00:00.000Z",
               "text": "Complete simplified readiness review",
               "tooltip": "MAP Lite requires a lighter readiness assessment focused on key migration requirements",
               "links": []
             },
             {
-              "id": "1-10",
+              "id": "2025-01-10T05:00:00.000Z",
               "text": "Verify MAP Lite specific requirements",
               "tooltip": "Ensure project meets the streamlined requirements for MAP Lite funding",
               "links": []
@@ -138,49 +144,52 @@
       "sections": [
         {
           "title": "All Projects",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "2-1",
+              "id": "2025-02-01T05:00:00.000Z",
               "text": "Create fund request in AWS Partner Funding Portal (APFP)",
               "tooltip": "Log into APFP and create a new MAP fund request with all required information",
-              "required": true,
               "links": [
                 {
                   "text": "APFP Portal",
                   "url": "https://partnercentral.awspartner.com/"
                 }
-              ]
+              ],
+              "required": true
             },
             {
-              "id": "2-2",
+              "id": "2025-02-02T05:00:00.000Z",
               "text": "Submit detailed migration plan",
               "tooltip": "Include migration waves, timelines, resource allocation, and technical approach",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "2-3",
+              "id": "2025-02-03T05:00:00.000Z",
               "text": "Document workload inventory and dependencies",
               "tooltip": "Create comprehensive list of all applications, databases, and infrastructure to be migrated",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "2-4",
+              "id": "2025-02-04T05:00:00.000Z",
               "text": "Define migration wave schedule",
               "tooltip": "Plan migration waves based on dependencies, complexity, and business priorities",
               "links": []
             },
             {
-              "id": "2-5",
+              "id": "2025-02-05T05:00:00.000Z",
               "text": "Submit fund request for AWS approval",
               "tooltip": "Ensure all required fields are complete before submission",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "2-6",
+              "id": "2025-02-06T05:00:00.000Z",
               "text": "Track fund request approval status",
               "tooltip": "Monitor APFP for updates and respond to any AWS requests for clarification",
               "links": []
@@ -189,23 +198,25 @@
         },
         {
           "title": "MAP Only - Additional Requirements",
-          "applicability": ["map"],
+          "applicability": [
+            "map"
+          ],
           "items": [
             {
-              "id": "2-7",
+              "id": "2025-02-07T05:00:00.000Z",
               "text": "Include MRA results in fund request",
               "tooltip": "Attach MRA report and remediation plans to fund request",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "2-8",
+              "id": "2025-02-08T05:00:00.000Z",
               "text": "Document Mobilize phase activities and timeline",
               "tooltip": "Detail planned activities for the Mobilize phase including training and process development",
               "links": []
             },
             {
-              "id": "2-9",
+              "id": "2025-02-09T05:00:00.000Z",
               "text": "Define success metrics and KPIs",
               "tooltip": "Establish measurable goals for migration success",
               "links": []
@@ -220,16 +231,18 @@
       "sections": [
         {
           "title": "MAP Mobilize Phase",
-          "applicability": ["map"],
+          "applicability": [
+            "map"
+          ],
           "items": [
             {
-              "id": "3-1",
+              "id": "2025-03-01T05:00:00.000Z",
               "text": "Establish Cloud Center of Excellence (CCoE)",
               "tooltip": "Create governance structure and cloud operating model",
               "links": []
             },
             {
-              "id": "3-2",
+              "id": "2025-03-02T05:00:00.000Z",
               "text": "Complete AWS training for migration team",
               "tooltip": "Ensure team has necessary AWS certifications and migration expertise",
               "links": [
@@ -240,29 +253,29 @@
               ]
             },
             {
-              "id": "3-3",
+              "id": "2025-03-03T05:00:00.000Z",
               "text": "Implement landing zone architecture",
               "tooltip": "Deploy AWS Control Tower or custom landing zone with security and governance controls",
               "links": []
             },
             {
-              "id": "3-4",
+              "id": "2025-03-04T05:00:00.000Z",
               "text": "Conduct migration pilot",
               "tooltip": "Migrate 1-2 representative workloads to validate approach and tools",
               "links": []
             },
             {
-              "id": "3-5",
+              "id": "2025-03-05T05:00:00.000Z",
               "text": "Document lessons learned from pilot",
               "tooltip": "Update migration approach based on pilot outcomes",
               "links": []
             },
             {
-              "id": "3-6",
+              "id": "2025-03-06T05:00:00.000Z",
               "text": "Submit Mobilize milestone claim",
               "tooltip": "Claim 20% of approved MAP funding upon Mobilize completion",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             }
           ]
         }
@@ -274,48 +287,51 @@
       "sections": [
         {
           "title": "All Projects - Migration Execution",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "4-1",
+              "id": "2025-04-01T04:00:00.000Z",
               "text": "Execute migration waves per approved plan",
               "tooltip": "Follow the wave schedule submitted in fund request",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "4-2",
+              "id": "2025-04-02T04:00:00.000Z",
               "text": "Track migration progress in Partner Analytics Dashboard",
               "tooltip": "Monitor tagged AWS spend to ensure milestone achievement",
-              "required": true,
               "links": [
                 {
                   "text": "Partner Analytics",
                   "url": "https://partnercentral.awspartner.com/analytics"
                 }
-              ]
+              ],
+              "required": true
             },
             {
-              "id": "4-3",
+              "id": "2025-04-03T04:00:00.000Z",
               "text": "Implement tagging strategy for migrated workloads",
               "tooltip": "Use MAP:Migration tags to track spend for milestone claims",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "4-4",
+              "id": "2025-04-04T04:00:00.000Z",
               "text": "Conduct post-migration validation",
               "tooltip": "Verify application functionality and performance after migration",
               "links": []
             },
             {
-              "id": "4-5",
+              "id": "2025-04-05T04:00:00.000Z",
               "text": "Document migration runbooks",
               "tooltip": "Create detailed documentation for each migrated workload",
               "links": []
             },
             {
-              "id": "4-6",
+              "id": "2025-04-06T04:00:00.000Z",
               "text": "Implement monitoring and alerting",
               "tooltip": "Set up CloudWatch, AWS Systems Manager, or third-party monitoring",
               "links": []
@@ -324,56 +340,62 @@
         },
         {
           "title": "Milestone Claims",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "4-7",
+              "id": "2025-04-07T04:00:00.000Z",
               "text": "Submit 25% ARR milestone claim",
               "tooltip": "Claim when tagged migration spend reaches 25% of committed ARR",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "4-8",
+              "id": "2025-04-08T04:00:00.000Z",
               "text": "Submit 50% ARR milestone claim",
               "tooltip": "Claim when tagged migration spend reaches 50% of committed ARR",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "4-9",
+              "id": "2025-04-09T04:00:00.000Z",
               "text": "Submit 75% ARR milestone claim",
               "tooltip": "Claim when tagged migration spend reaches 75% of committed ARR",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "4-10",
+              "id": "2025-04-10T04:00:00.000Z",
               "text": "Submit 100% ARR milestone claim",
               "tooltip": "Final claim when tagged migration spend reaches 100% of committed ARR",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             }
           ]
         },
         {
           "title": "Modernization Activities",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "4-11",
+              "id": "2025-04-11T04:00:00.000Z",
               "text": "Identify modernization opportunities",
               "tooltip": "Assess migrated workloads for optimization and modernization",
               "links": []
             },
             {
-              "id": "4-12",
+              "id": "2025-04-12T04:00:00.000Z",
               "text": "Implement cost optimization measures",
               "tooltip": "Right-size instances, implement auto-scaling, use Reserved Instances",
               "links": []
             },
             {
-              "id": "4-13",
+              "id": "2025-04-13T04:00:00.000Z",
               "text": "Modernize applications where applicable",
               "tooltip": "Refactor to use cloud-native services like Lambda, containers, or managed databases",
               "links": []
@@ -388,67 +410,73 @@
       "sections": [
         {
           "title": "All Projects",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "5-1",
+              "id": "2025-05-01T04:00:00.000Z",
               "text": "Complete final migration validation",
               "tooltip": "Ensure all workloads are successfully migrated and operational",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "5-2",
+              "id": "2025-05-02T04:00:00.000Z",
               "text": "Submit final fund claim documentation",
               "tooltip": "Provide all required documentation for final milestone claim",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "5-3",
+              "id": "2025-05-03T04:00:00.000Z",
               "text": "Conduct project retrospective",
               "tooltip": "Document lessons learned and best practices for future migrations",
               "links": []
             },
             {
-              "id": "5-4",
+              "id": "2025-05-04T04:00:00.000Z",
               "text": "Transfer knowledge to customer operations team",
               "tooltip": "Ensure customer team can manage and operate migrated workloads",
               "links": []
             },
             {
-              "id": "5-5",
+              "id": "2025-05-05T04:00:00.000Z",
               "text": "Archive project documentation",
               "tooltip": "Store all migration artifacts, runbooks, and documentation",
               "links": []
             },
             {
-              "id": "5-6",
+              "id": "2025-05-06T04:00:00.000Z",
               "text": "Close fund request in APFP",
               "tooltip": "Mark fund request as complete after all claims are approved",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             }
           ]
         },
         {
           "title": "Post-Migration Support",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "5-7",
+              "id": "2025-05-07T04:00:00.000Z",
               "text": "Establish ongoing support model",
               "tooltip": "Define support responsibilities and escalation procedures",
               "links": []
             },
             {
-              "id": "5-8",
+              "id": "2025-05-08T04:00:00.000Z",
               "text": "Schedule periodic optimization reviews",
               "tooltip": "Plan quarterly reviews to identify further optimization opportunities",
               "links": []
             },
             {
-              "id": "5-9",
+              "id": "2025-05-09T04:00:00.000Z",
               "text": "Document customer success story",
               "tooltip": "Create case study for future reference and marketing",
               "links": []
@@ -463,29 +491,32 @@
       "sections": [
         {
           "title": "Program Compliance",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "6-1",
+              "id": "2025-06-01T04:00:00.000Z",
               "text": "Ensure only MAP-eligible services are included",
               "tooltip": "Review MAP Included Services List to verify all services are eligible for funding",
-              "required": true,
               "links": [
                 {
                   "text": "MAP Included Services",
                   "url": "https://aws.amazon.com/migration-acceleration-program/included-services"
                 }
-              ]
+              ],
+              "required": true
             },
             {
-              "id": "6-2",
+              "id": "2025-06-02T04:00:00.000Z",
               "text": "Maintain accurate project documentation",
               "tooltip": "Keep all project artifacts up-to-date for potential AWS audits",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "6-3",
+              "id": "2025-06-03T04:00:00.000Z",
               "text": "Follow AWS Well-Architected Framework",
               "tooltip": "Ensure migrations align with AWS best practices for security, reliability, and cost optimization",
               "links": [
@@ -496,14 +527,14 @@
               ]
             },
             {
-              "id": "6-4",
+              "id": "2025-06-04T04:00:00.000Z",
               "text": "Implement proper cost allocation tags",
               "tooltip": "Use consistent tagging strategy for cost tracking and optimization",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "6-5",
+              "id": "2025-06-05T04:00:00.000Z",
               "text": "Maintain security and compliance standards",
               "tooltip": "Ensure all migrated workloads meet security and compliance requirements",
               "links": []
@@ -512,30 +543,33 @@
         },
         {
           "title": "Common Pitfalls to Avoid",
-          "applicability": ["map", "map-lite"],
+          "applicability": [
+            "map",
+            "map-lite"
+          ],
           "items": [
             {
-              "id": "6-6",
+              "id": "2025-06-06T04:00:00.000Z",
               "text": "Verify workloads are net-new to AWS",
               "tooltip": "MAP funding only applies to workloads not previously running on AWS",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "6-7",
+              "id": "2025-06-07T04:00:00.000Z",
               "text": "Avoid including ineligible services in claims",
               "tooltip": "Services like Marketplace, Support plans, and certain data transfer costs are not eligible",
               "links": []
             },
             {
-              "id": "6-8",
+              "id": "2025-06-08T04:00:00.000Z",
               "text": "Submit claims within program timelines",
               "tooltip": "Claims must be submitted within the approved project timeline",
-              "required": true,
-              "links": []
+              "links": [],
+              "required": true
             },
             {
-              "id": "6-9",
+              "id": "2025-06-09T04:00:00.000Z",
               "text": "Maintain clear audit trail",
               "tooltip": "Keep detailed records of all migration activities and spending",
               "links": []
