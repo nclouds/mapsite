@@ -162,8 +162,26 @@
           "items": [
             {
               "id": "2-1",
-              "text": "",
+              "text": "Approve TotalValue Optimization Blueprint with Customer",
               "tooltip": "The OLA is not required but may be beneficial to the sales process. Both nClouds and the OLA partner are funded by AWS.",
+              "links": []
+            },
+            {
+              "id": "2-2",
+              "text": "Strategic Consultation & Scoping",
+              "tooltip": "Collaborate with your team to understand current business objectives\nDefine migration scope and establish assessment parameters\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
+              "links": []
+            },
+            {
+              "id": "2-3",
+              "text": "Tool-Based Discovery and Data Collection",
+              "tooltip": "Deploy industry-leading assessment tools:\n - Migration Evaluator for on-premises environment analysis\n - Cloudamize for existing cloud and hybrid environments\n - Both agentless and agent-based options available\nConduct 2-4 week performance monitoring during peak business periods\nCollect actual utilization data",
+              "links": []
+            },
+            {
+              "id": "2-4",
+              "text": "OLA Report & Multi-Scenario Analysis",
+              "tooltip": "",
               "links": []
             }
           ]
