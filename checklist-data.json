@@ -52,6 +52,7 @@
                   "url": "https://drive.google.com/file/d/1xOhSpZxtlp4pwdWK5JnTepQC1Z9Nyem2/view?usp=drive_link"
                 }
               ],
+              "responsible": "AE",
               "required": true
             },
             {
@@ -64,6 +65,7 @@
                   "url": "https://drive.google.com/file/d/1xOhSpZxtlp4pwdWK5JnTepQC1Z9Nyem2/view?usp=drive_link"
                 }
               ],
+              "responsible": "AE",
               "required": true
             },
             {
@@ -76,6 +78,7 @@
                   "url": "https://calculator.aws"
                 }
               ],
+              "responsible": "SA",
               "required": true
             },
             {
@@ -83,6 +86,7 @@
               "text": "Verify customer has not previously received MAP funding",
               "tooltip": "Customers can only receive MAP funding once. Check with AWS team if unsure",
               "links": [],
+              "responsible": "AE",
               "required": true
             },
             {
@@ -90,6 +94,7 @@
               "text": "Confirm migration timeline aligns with MAP requirements",
               "tooltip": "Migration must be completed within the program timeframe (typically 12-24 months)",
               "links": [],
+              "responsible": "AE",
               "required": true
             }
           ]
@@ -110,6 +115,7 @@
                   "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
                 }
               ],
+              "responsible": "PM",
               "required": true
             },
             {
@@ -117,13 +123,15 @@
               "text": "Document MRA findings and recommendations",
               "tooltip": "Create comprehensive report of gaps identified and remediation plans",
               "links": [],
+              "responsible": "MT",
               "required": true
             },
             {
               "id": "1-8",
               "text": "Share MRA results with customer stakeholders",
               "tooltip": "Present findings to executive sponsors and technical teams",
-              "links": []
+              "links": [],
+              "responsible": "PM"
             }
           ]
         },
@@ -137,13 +145,15 @@
               "id": "1-9",
               "text": "Complete simplified readiness review",
               "tooltip": "MAP Lite requires a lighter readiness assessment focused on key migration requirements",
-              "links": []
+              "links": [],
+              "responsible": "PM"
             },
             {
               "id": "1-10",
               "text": "Verify MAP Lite specific requirements",
               "tooltip": "Ensure project meets the streamlined requirements for MAP Lite funding",
-              "links": []
+              "links": [],
+              "responsible": "AE"
             }
           ]
         }
@@ -164,25 +174,29 @@
               "id": "2-1",
               "text": "Approve TotalValue Optimization Blueprint with Customer",
               "tooltip": "The OLA is not required but may be beneficial to the sales process. Both nClouds and the OLA partner are funded by AWS.",
-              "links": []
+              "links": [],
+              "responsible": "AE"
             },
             {
               "id": "2-2",
               "text": "Strategic Consultation & Scoping",
               "tooltip": "Collaborate with your team to understand current business objectives\nDefine migration scope and establish assessment parameters\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
-              "links": []
+              "links": [],
+              "responsible": "AE, SA"
             },
             {
               "id": "2-3",
               "text": "Tool-Based Discovery and Data Collection",
               "tooltip": "Deploy industry-leading assessment tools:\n - Migration Evaluator for on-premises environment analysis\n - Cloudamize for existing cloud and hybrid environments\n - Both agentless and agent-based options available\nConduct 2-4 week performance monitoring during peak business periods\nCollect actual utilization data",
-              "links": []
+              "links": [],
+              "responsible": "PM, OLA Partner"
             },
             {
               "id": "2-4",
               "text": "OLA Report & Multi-Scenario Analysis",
-              "tooltip": "",
-              "links": []
+              "tooltip": "Deliver a comprehensive Individual Business Case (TCO) that includes:\n - On-Premises vs. AWS Lift & Shift Scenario - Direct migration cost comparison\n - AWS Rightsized Scenario - Optimized instance sizing with potential 30% cost reduction\n - Licensing Optimization - BYOL vs. License-Included recommendations\n - Infrastructure Requirements for optimal AWS performance\nQuantified savings projections\nThe entire assessment typically takes 2-4 weeks and is designed to minimize IT resource strain while providing data-driven insights for your AWS migration strategy.",
+              "links": [],
+              "responsible": "OLA Partner"
             }
           ]
         }
