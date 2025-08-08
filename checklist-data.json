@@ -2,7 +2,7 @@
   "metadata": {
     "title": "MAP Migration Project Checklist",
     "version": 0.2,
-    "lastUpdated": "2025-08-08T20:34:41.326Z"
+    "lastUpdated": "2025-08-08T20:54:57.475Z"
   },
   "resources": [
     {
@@ -186,7 +186,7 @@
               "tooltip": "The OLA is not required but may be beneficial to the sales process. Both nClouds and the OLA partner are funded by AWS.",
               "links": [
                 {
-                  "text": "Optimization Blueprint Deck",
+                  "text": "[Template] Optimization Blueprint Deck",
                   "url": "https://docs.google.com/presentation/d/1BP7hswcwQTencKDMj6W52koN52ZUJxLzosKkn4eYQQQ/edit?usp=drive_link"
                 },
                 {
@@ -196,10 +196,6 @@
                 {
                   "text": "Funding Guide",
                   "url": "https://drive.google.com/file/d/11JE9FpbUAKIUj9a3CZZwOpXm-wKfdkJK/view?usp=drive_link"
-                },
-                {
-                  "text": "ACE Cheat",
-                  "url": "https://docs.google.com/document/d/1B8smADy1V0_iObxdbzeNUqxCXZ_BHTx6uEZdWYohtUw/edit?usp=drive_link"
                 }
               ],
               "responsible": "AE"
@@ -208,7 +204,12 @@
               "id": "2-2",
               "text": "Create an ACE opportunity",
               "tooltip": "Your ACE opp can now focus on the details that matter to you and other AWS teams. The OLA team now only requires that an ACE opp exists—no specific details needed within it.",
-              "links": [],
+              "links": [
+                {
+                  "text": "ACE Cheat",
+                  "url": "https://docs.google.com/document/d/1B8smADy1V0_iObxdbzeNUqxCXZ_BHTx6uEZdWYohtUw/edit?usp=drive_link"
+                }
+              ],
               "responsible": "AE",
               "required": true
             },
@@ -216,7 +217,12 @@
               "id": "2-3",
               "text": "Submit request for OLA-funded ISV tooling and partner support",
               "tooltip": "This does not change the process for requesting OLA Partner Incentive Funding (PIF)",
-              "links": [],
+              "links": [
+                {
+                  "text": "ISV Funding",
+                  "url": "https://app.smartsheet.com/b/form/0eb132d36a614d4b936fb068e289a819"
+                }
+              ],
               "responsible": "AE",
               "required": true
             }
@@ -235,12 +241,8 @@
               "tooltip": "Collaborate with your team to understand current business objectives\\n\nDefine migration scope and establish assessment parameters\\n\nDetermine optimal data collection methods based on your environment (VMware, physical servers, multi-cloud)",
               "links": [
                 {
-                  "text": "Kickoff Deck",
+                  "text": "[Template] Kickoff Deck",
                   "url": "https://docs.google.com/presentation/d/1lGnBJRFYlQp2y1Yd5_LaDfSHSnr9oHR8DpIAn-r0cp4/edit?usp=sharing"
-                },
-                {
-                  "text": "OLA Workflow",
-                  "url": "https://docs.google.com/document/d/1H2k1j7s_63ki05xSuNLnX1XQlWp9oZMwa4YWh6dUwQo/edit?tab=t.0"
                 }
               ],
               "responsible": "AE, SA",
@@ -256,6 +258,13 @@
             },
             {
               "id": "2-6",
+              "text": "Review Report with Partner",
+              "tooltip": "Partner will allow time to review prior to presentation to Customer.  This is where you can make sure the TCO is fairly presented. ",
+              "links": [],
+              "responsible": "SA, OLA Partner"
+            },
+            {
+              "id": "2-7",
               "text": "OLA Report & Multi-Scenario Analysis",
               "tooltip": "Deliver a comprehensive Individual Business Case (TCO) that includes:\\n\n - On-Premises vs. AWS Lift & Shift Scenario - Direct migration cost comparison\\n\n - AWS Rightsized Scenario - Optimized instance sizing with potential 30% cost reduction\\n\n - Licensing Optimization - BYOL vs. License-Included recommendations\\n\n - Infrastructure Requirements for optimal AWS performance\\n\nQuantified savings projections\\n\nThe entire assessment typically takes 2-4 weeks and is designed to minimize IT resource strain while providing data-driven insights for your AWS migration strategy.",
               "links": [],
