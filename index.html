@@ -36,8 +36,8 @@
         .header {
             background: white;
             border-radius: 8px;
-            padding: 32px;
-            margin-bottom: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             text-align: center;
         }
@@ -64,8 +64,8 @@
         .controls {
             background: white;
             border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             display: flex;
             gap: 16px;
@@ -108,14 +108,14 @@
             background: #e6f3ff;
             border: 1px solid #b3d9ff;
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
         }
         
         .resources h2 {
-            margin: 0 0 16px 0;
+            margin: 0 0 12px 0;
             color: #0052cc;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
         }
         
@@ -130,9 +130,9 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            padding: 8px;
+            gap: 6px;
+            font-size: 13px;
+            padding: 6px;
             border-radius: 4px;
             transition: background 0.2s;
         }
@@ -145,13 +145,13 @@
         .phase {
             background: white;
             border-radius: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         
         .phase-header {
-            padding: 20px;
+            padding: 16px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
@@ -165,7 +165,7 @@
         }
         
         .phase-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             margin: 0;
             color: #1a1a1a;
@@ -173,7 +173,7 @@
         
         .phase-content {
             display: none;
-            padding: 24px;
+            padding: 16px;
             background: #fafafa;
         }
         
@@ -184,15 +184,15 @@
         .section {
             background: white;
             border-radius: 6px;
-            padding: 20px;
-            margin-bottom: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
             border: 1px solid #e5e5e5;
         }
         
         .section-title {
             font-weight: 600;
-            font-size: 16px;
-            margin: 0 0 16px 0;
+            font-size: 15px;
+            margin: 0 0 12px 0;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -217,18 +217,19 @@
         }
         
         .guide-item {
-            padding: 12px 0;
+            padding: 8px 0;
             border-bottom: 1px solid #f0f0f0;
         }
         
         .guide-item:last-child {
             border-bottom: none;
+            padding-bottom: 0;
         }
         
         .item-header {
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 10px;
         }
         
         .item-number {
@@ -247,9 +248,9 @@
         }
         
         .item-text {
-            font-size: 15px;
-            line-height: 1.6;
-            margin: 0 0 8px 0;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 0 4px 0;
             color: #333;
         }
         
@@ -283,7 +284,7 @@
             color: white;
             text-align: left;
             border-radius: 6px;
-            padding: 10px;
+            padding: 8px;
             position: absolute;
             z-index: 1000;
             bottom: 125%;
@@ -291,8 +292,8 @@
             margin-left: -140px;
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 13px;
-            line-height: 1.5;
+            font-size: 12px;
+            line-height: 1.4;
             font-weight: normal;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
@@ -310,10 +311,10 @@
         }
         
         .item-links {
-            margin-top: 8px;
+            margin-top: 4px;
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
         }
         
         .item-link {
@@ -545,6 +546,7 @@
                                             ${visibleItems.map(item => `
                                                 <div class="guide-item">
                                                     <div class="item-header">
+                                                        <span class="item-number">${item.id}</span>
                                                         <div class="item-content">
                                                             <p class="item-text">
                                                                 ${item.text}
