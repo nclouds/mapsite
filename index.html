@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+        
+        .checklist-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            margin: 0 0 16px 0;
+            color: #1a1a1a;
+            font-size: 28px;
+        }
+        
+        .progress-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #0073e6;
+            transition: width 0.3s ease;
+        }
+        
+        .controls {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .project-selector {
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 16px 8px 36px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+        
+        .resources {
+            background: #e6f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .resources h2 {
+            margin: 0 0 12px 0;
+            color: #0052cc;
+            font-size: 18px;
+        }
+        
+        .resource-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+        
+        .resource-link {
+            color: #0052cc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .resource-link:hover {
+            text-decoration: underline;
+        }
+        
+        .phase {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .phase-header {
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        
+        .phase-header:hover {
+            background: #f8f8f8;
+        }
+        
+        .phase-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .phase-content {
+            display: none;
+            padding: 0 16px 16px;
+        }
+        
+        .phase-content.active {
+            display: block;
+        }
+        
+        .section {
+            background: #f8f8f8;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: normal;
+        }
+        
+        .badge-map {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+        
+        .badge-lite {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .checklist-item:hover {
+            background: white;
+        }
+        
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        
+        .item-content {
+            flex: 1;
+        }
+        
+        .item-text {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+        
+        .item-text.completed {
+            text-decoration: line-through;
+            color: #666;
+        }
+        
+        .required-badge {
+            font-size: 11px;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+        
+        .tooltip-icon {
+            color: #999;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        
+        .tooltip-text {
+            visibility: hidden;
+            width: 250px;
+            background-color: #333;
+            color: white;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .item-link {
+            color: #0052cc;
+            text-decoration: none;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+        
+        .item-link:hover {
+            text-decoration: underline;
+        }
+        
+        .chevron {
+            transition: transform 0.2s;
+        }
+        
+        .chevron.rotated {
+            transform: rotate(90deg);
+        }
+        
+        .button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        
+        .button-secondary {
+            background: #e5e5e5;
+            color: #333;
+        }
+        
+        .button-secondary:hover {
+            background: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <div class="checklist-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>MAP Migration Project Checklist</h1>
+            <div class="progress-section">
+                <div>
+                    <strong>Progress:</strong> <span id="progress-text">0 of 0 items completed (0%)</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <select class="project-selector" id="project-type">
+                <option value="both">All Items</option>
+                <option value="map">MAP Only ($500K-$10M)</option>
+                <option value="map-lite">MAP Lite ($100K-$500K)</option>
+            </select>
+            
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" placeholder="Search checklist items..." id="search-input">
+            </div>
+            
+            <button class="button button-secondary" onclick="exportProgress()">
+                📥 Export
+            </button>
+            
+            <label class="button button-secondary" style="margin: 0">
+                📤 Import
+                <input type="file" style="display: none" accept=".json" onchange="importProgress(event)">
+            </label>
+        </div>
+
+        <!-- Resources -->
+        <div class="resources">
+            <h2>Important Resources</h2>
+            <div class="resource-links" id="resource-links">
+                <!-- Resources will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Phases -->
+        <div id="phases-container">
+            <!-- Phases will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Complete checklist data
+        const checklistData = {
+            metadata: {
+                title: "MAP Migration Project Checklist",
+                version: "1.0",
+                lastUpdated: "2024-01-15"
+            },
+            resources: [
+                {
+                    title: "AWS Partner Funding Portal (APFP)",
+                    url: "#",
+                    description: "Primary portal for fund requests and claims"
+                },
+                {
+                    title: "MAP Terms & Conditions",
+                    url: "https://aws.amazon.com/migration-acceleration-program/terms",
+                    description: "Official program terms"
+                },
+                {
+                    title: "Migration Readiness Assessment Guide",
+                    url: "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html",
+                    description: "Complete MRA documentation"
+                }
+            ],
+            phases: [
+                {
+                    id: "phase-1",
+                    title: "Phase 1: Project Initiation",
+                    sections: [
+                        {
+                            title: "Both MAP & MAP Lite",
+                            applicability: ["map", "map-lite"],
+                            items: [
+                                {
+                                    id: "1-1",
+                                    text: "Determine migration eligibility for MAP funding",
+                                    tooltip: "Verify that your migration project meets AWS MAP requirements including minimum ARR thresholds and partner eligibility criteria",
+                                    links: []
+                                },
+                                {
+                                    id: "1-2",
+                                    text: "Confirm partner eligibility requirements are met",
+                                    tooltip: "Must have AWS Migration Competency or qualifying AWS Competencies/Service Delivery designations",
+                                    links: [
+                                        {
+                                            text: "Partner Eligibility",
+                                            url: "#"
+                                        }
+                                    ]
+                                },
+                                {
+                                    id: "1-3",
+                                    text: "Identify customer's anticipated post-migration Annual Run Rate (ARR)",
+                                    tooltip: "Calculate expected AWS spend after migration completion. This determines MAP vs MAP Lite eligibility",
+                                    links: []
+                                }
+                            ]
+                        },
+                        {
+                            title: "MAP Only ($500K-$10M ARR)",
+                            applicability: ["map"],
+                            items: [
+                                {
+                                    id: "1-4",
+                                    text: "Complete Migration Readiness Assessment (MRA)",
+                                    tooltip: "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
+                                    required: true,
+                                    links: [
+                                        {
+                                            text: "MRA Guide",
+                                            url: "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "phase-2",
+                    title: "Phase 2: Fund Request & Migration Planning",
+                    sections: [
+                        {
+                            title: "All Projects",
+                            applicability: ["map", "map-lite"],
+                            items: [
+                                {
+                                    id: "2-1",
+                                    text: "Submit fund request in AWS Partner Funding Portal (APFP)",
+                                    tooltip: "Create and submit your initial fund request with migration plan details",
+                                    required: true,
+                                    links: []
+                                },
+                                {
+                                    id: "2-2",
+                                    text: "Create detailed migration plan",
+                                    tooltip: "Document migration waves, timelines, resource requirements, and technical approach",
+                                    links: []
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // State management
+        let checkedItems = {};
+        let expandedPhases = {};
+        let projectType = 'both';
+        let searchTerm = '';
+
+        // Load saved state
+        function loadState() {
+            const saved = localStorage.getItem('mapChecklistProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                checkedItems = data.checkedItems || {};
+                expandedPhases = data.expandedPhases || {};
+                projectType = data.projectType || 'both';
+            }
+        }
+
+        // Save state
+        function saveState() {
+            localStorage.setItem('mapChecklistProgress', JSON.stringify({
+                checkedItems,
+                expandedPhases,
+                projectType,
+                lastUpdated: new Date().toISOString()
+            }));
+        }
+
+        // Calculate progress
+        function calculateProgress() {
+            const visibleItems = getVisibleItems();
+            const checkedCount = visibleItems.filter(id => checkedItems[id]).length;
+            const percentage = visibleItems.length > 0 ? Math.round((checkedCount / visibleItems.length) * 100) : 0;
+            
+            document.getElementById('progress-text').textContent = `${checkedCount} of ${visibleItems.length} items completed (${percentage}%)`;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+        }
+
+        // Get visible items based on filters
+        function getVisibleItems() {
+            const items = [];
+            checklistData.phases.forEach(phase => {
+                phase.sections.forEach(section => {
+                    if (shouldShowSection(section)) {
+                        section.items.forEach(item => {
+                            if (shouldShowItem(item)) {
+                                items.push(item.id);
+                            }
+                        });
+                    }
+                });
+            });
+            return items;
+        }
+
+        // Check if section should be shown
+        function shouldShowSection(section) {
+            if (projectType === 'both') return true;
+            return section.applicability.includes(projectType);
+        }
+
+        // Check if item should be shown
+        function shouldShowItem(item) {
+            if (!searchTerm) return true;
+            return item.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                   (item.tooltip && item.tooltip.toLowerCase().includes(searchTerm.toLowerCase()));
+        }
+
+        // Toggle checkbox
+        function toggleCheck(itemId) {
+            checkedItems[itemId] = !checkedItems[itemId];
+            saveState();
+            calculateProgress();
+            renderPhases();
+        }
+
+        // Toggle phase expansion
+        function togglePhase(phaseId) {
+            expandedPhases[phaseId] = !expandedPhases[phaseId];
+            saveState();
+            renderPhases();
+        }
+
+        // Export progress
+        function exportProgress() {
+            const data = {
+                checklistData,
+                progress: {
+                    checkedItems,
+                    expandedPhases,
+                    projectType,
+                    lastUpdated: new Date().toISOString()
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `MAP_Checklist_Progress_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Import progress
+        function importProgress(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.progress) {
+                        checkedItems = data.progress.checkedItems || {};
+                        expandedPhases = data.progress.expandedPhases || {};
+                        projectType = data.progress.projectType || 'both';
+                        document.getElementById('project-type').value = projectType;
+                        saveState();
+                        calculateProgress();
+                        renderPhases();
+                        alert('Progress imported successfully!');
+                    }
+                } catch (error) {
+                    alert('Error importing file: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Render resources
+        function renderResources() {
+            const container = document.getElementById('resource-links');
+            container.innerHTML = checklistData.resources.map(resource => `
+                <a href="${resource.url}" target="_blank" class="resource-link">
+                    <span>🔗</span>
+                    <span>${resource.title}</span>
+                </a>
+            `).join('');
+        }
+
+        // Render phases
+        function renderPhases() {
+            const container = document.getElementById('phases-container');
+            container.innerHTML = checklistData.phases.map(phase => {
+                const isExpanded = expandedPhases[phase.id];
+                const hasVisibleSections = phase.sections.some(section => shouldShowSection(section));
+                
+                if (!hasVisibleSections) return '';
+                
+                return `
+                    <div class="phase">
+                        <div class="phase-header" onclick="togglePhase('${phase.id}')">
+                            <h2 class="phase-title">${phase.title}</h2>
+                            <span class="chevron ${isExpanded ? 'rotated' : ''}">▶</span>
+                        </div>
+                        <div class="phase-content ${isExpanded ? 'active' : ''}">
+                            ${phase.sections.map(section => {
+                                if (!shouldShowSection(section)) return '';
+                                
+                                const visibleItems = section.items.filter(item => shouldShowItem(item));
+                                if (visibleItems.length === 0) return '';
+                                
+                                return `
+                                    <div class="section">
+                                        <h3 class="section-title">
+                                            ${section.title}
+                                            ${section.applicability.includes('map') && !section.applicability.includes('map-lite') ? 
+                                                '<span class="badge badge-map">MAP Only</span>' : ''}
+                                            ${!section.applicability.includes('map') && section.applicability.includes('map-lite') ? 
+                                                '<span class="badge badge-lite">MAP Lite Only</span>' : ''}
+                                        </h3>
+                                        <div>
+                                            ${visibleItems.map(item => `
+                                                <div class="checklist-item">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        class="checkbox"
+                                                        ${checkedItems[item.id] ? 'checked' : ''}
+                                                        onchange="toggleCheck('${item.id}')"
+                                                    >
+                                                    <div class="item-content">
+                                                        <div class="item-text ${checkedItems[item.id] ? 'completed' : ''}">
+                                                            ${item.text}
+                                                            ${item.required ? '<span class="required-badge">Required</span>' : ''}
+                                                            ${item.tooltip ? `
+                                                                <span class="tooltip">
+                                                                    <span class="tooltip-icon">ⓘ</span>
+                                                                    <span class="tooltip-text">${item.tooltip}</span>
+                                                                </span>
+                                                            ` : ''}
+                                                        </div>
+                                                        ${item.links && item.links.map(link => `
+                                                            <a href="${link.url}" target="_blank" class="item-link">
+                                                                <span>🔗</span>
+                                                                <span>${link.text}</span>
+                                                            </a>
+                                                        `).join('')}
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Event listeners
+        document.getElementById('project-type').addEventListener('change', function(e) {
+            projectType = e.target.value;
+            saveState();
+            calculateProgress();
+            renderPhases();
+        });
+
+        document.getElementById('search-input').addEventListener('input', function(e) {
+            searchTerm = e.target.value;
+            renderPhases();
+            calculateProgress();
+        });
+
+        // Initialize
+        loadState();
+        renderResources();
+        renderPhases();
+        calculateProgress();
+        
+        // Set initial values
+        document.getElementById('project-type').value = projectType;
+    </script>
+</body>
+</html>
