@@ -118,6 +118,9 @@ function generateJSON() {
   const metadataSheet = ss.getSheetByName('Metadata');
   const metadata = getMetadata(metadataSheet);
   
+  // Update lastUpdated field with current date and time
+  updateLastUpdated(metadataSheet);
+  
   // Get resources
   const resourcesSheet = ss.getSheetByName('Resources');
   const resources = getResources(resourcesSheet);
@@ -131,6 +134,30 @@ function generateJSON() {
     resources: resources,
     phases: phases
   };
+}
+
+/**
+ * Update the lastUpdated field in the Metadata sheet
+ */
+function updateLastUpdated(metadataSheet) {
+  if (!metadataSheet) return;
+  
+  const data = metadataSheet.getDataRange().getValues();
+  const currentDateTime = new Date().toISOString();
+  
+  // Find the lastUpdated row
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === 'lastUpdated' || data[i][0] === 'LastUpdated') {
+      // Update the value in column B
+      metadataSheet.getRange(i + 1, 2).setValue(currentDateTime);
+      return;
+    }
+  }
+  
+  // If lastUpdated doesn't exist, add it
+  const lastRow = metadataSheet.getLastRow();
+  metadataSheet.getRange(lastRow + 1, 1).setValue('lastUpdated');
+  metadataSheet.getRange(lastRow + 1, 2).setValue(currentDateTime);
 }
 
 /**
@@ -187,6 +214,11 @@ function getMetadata(sheet) {
     if (field && value) {
       metadata[field] = value;
     }
+  }
+  
+  // Ensure we have the updated lastUpdated value
+  if (metadata.lastUpdated === undefined) {
+    metadata.lastUpdated = new Date().toISOString();
   }
   
   return metadata;
