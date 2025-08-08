@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <title>MAP Migration Checklist</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             background: #f5f5f5;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #dc2626;
+            background: #fee2e2;
+            margin: 20px;
+            border-radius: 8px;
         }
         
         .checklist-container {
@@ -318,169 +335,45 @@
     </style>
 </head>
 <body>
-    <div class="checklist-container">
-        <!-- Header -->
-        <div class="header">
-            <h1>MAP Migration Project Checklist</h1>
-            <div class="progress-section">
-                <div>
-                    <strong>Progress:</strong> <span id="progress-text">0 of 0 items completed (0%)</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Controls -->
-        <div class="controls">
-            <select class="project-selector" id="project-type">
-                <option value="both">All Items</option>
-                <option value="map">MAP Only ($500K-$10M)</option>
-                <option value="map-lite">MAP Lite ($100K-$500K)</option>
-            </select>
-            
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" placeholder="Search checklist items..." id="search-input">
-            </div>
-            
-            <button class="button button-secondary" onclick="exportProgress()">
-                📥 Export
-            </button>
-            
-            <label class="button button-secondary" style="margin: 0">
-                📤 Import
-                <input type="file" style="display: none" accept=".json" onchange="importProgress(event)">
-            </label>
-        </div>
-
-        <!-- Resources -->
-        <div class="resources">
-            <h2>Important Resources</h2>
-            <div class="resource-links" id="resource-links">
-                <!-- Resources will be populated by JavaScript -->
-            </div>
-        </div>
-
-        <!-- Phases -->
-        <div id="phases-container">
-            <!-- Phases will be populated by JavaScript -->
-        </div>
+    <div id="app">
+        <div class="loading">Loading checklist...</div>
     </div>
 
     <script>
-        // Complete checklist data
-        const checklistData = {
-            metadata: {
-                title: "MAP Migration Project Checklist",
-                version: "1.0",
-                lastUpdated: "2024-01-15"
-            },
-            resources: [
-                {
-                    title: "AWS Partner Funding Portal (APFP)",
-                    url: "#",
-                    description: "Primary portal for fund requests and claims"
-                },
-                {
-                    title: "MAP Terms & Conditions",
-                    url: "https://aws.amazon.com/migration-acceleration-program/terms",
-                    description: "Official program terms"
-                },
-                {
-                    title: "Migration Readiness Assessment Guide",
-                    url: "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html",
-                    description: "Complete MRA documentation"
-                }
-            ],
-            phases: [
-                {
-                    id: "phase-1",
-                    title: "Phase 1: Project Initiation",
-                    sections: [
-                        {
-                            title: "Both MAP & MAP Lite",
-                            applicability: ["map", "map-lite"],
-                            items: [
-                                {
-                                    id: "1-1",
-                                    text: "Determine migration eligibility for MAP funding",
-                                    tooltip: "Verify that your migration project meets AWS MAP requirements including minimum ARR thresholds and partner eligibility criteria",
-                                    links: []
-                                },
-                                {
-                                    id: "1-2",
-                                    text: "Confirm partner eligibility requirements are met",
-                                    tooltip: "Must have AWS Migration Competency or qualifying AWS Competencies/Service Delivery designations",
-                                    links: [
-                                        {
-                                            text: "Partner Eligibility",
-                                            url: "#"
-                                        }
-                                    ]
-                                },
-                                {
-                                    id: "1-3",
-                                    text: "Identify customer's anticipated post-migration Annual Run Rate (ARR)",
-                                    tooltip: "Calculate expected AWS spend after migration completion. This determines MAP vs MAP Lite eligibility",
-                                    links: []
-                                }
-                            ]
-                        },
-                        {
-                            title: "MAP Only ($500K-$10M ARR)",
-                            applicability: ["map"],
-                            items: [
-                                {
-                                    id: "1-4",
-                                    text: "Complete Migration Readiness Assessment (MRA)",
-                                    tooltip: "The MRA evaluates your organization's readiness across people, process, and technology dimensions",
-                                    required: true,
-                                    links: [
-                                        {
-                                            text: "MRA Guide",
-                                            url: "https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-readiness/welcome.html"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    id: "phase-2",
-                    title: "Phase 2: Fund Request & Migration Planning",
-                    sections: [
-                        {
-                            title: "All Projects",
-                            applicability: ["map", "map-lite"],
-                            items: [
-                                {
-                                    id: "2-1",
-                                    text: "Submit fund request in AWS Partner Funding Portal (APFP)",
-                                    tooltip: "Create and submit your initial fund request with migration plan details",
-                                    required: true,
-                                    links: []
-                                },
-                                {
-                                    id: "2-2",
-                                    text: "Create detailed migration plan",
-                                    tooltip: "Document migration waves, timelines, resource requirements, and technical approach",
-                                    links: []
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        };
-
-        // State management
+        // Global variables
+        let checklistData = null;
         let checkedItems = {};
         let expandedPhases = {};
         let projectType = 'both';
         let searchTerm = '';
+
+        // Load checklist data from JSON file
+        async function loadChecklistData() {
+            try {
+                const response = await fetch('checklist-data.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                checklistData = await response.json();
+                initializeApp();
+            } catch (error) {
+                document.getElementById('app').innerHTML = `
+                    <div class="error">
+                        <h2>Error Loading Checklist</h2>
+                        <p>${error.message}</p>
+                        <p>Please ensure checklist-data.json is in the same directory as index.html</p>
+                    </div>
+                `;
+                console.error('Error loading checklist data:', error);
+            }
+        }
+
+        // Initialize the application
+        function initializeApp() {
+            loadState();
+            renderApp();
+            calculateProgress();
+        }
 
         // Load saved state
         function loadState() {
@@ -509,13 +402,22 @@
             const checkedCount = visibleItems.filter(id => checkedItems[id]).length;
             const percentage = visibleItems.length > 0 ? Math.round((checkedCount / visibleItems.length) * 100) : 0;
             
-            document.getElementById('progress-text').textContent = `${checkedCount} of ${visibleItems.length} items completed (${percentage}%)`;
-            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            const progressText = document.getElementById('progress-text');
+            const progressBar = document.getElementById('progress-bar');
+            
+            if (progressText) {
+                progressText.textContent = `${checkedCount} of ${visibleItems.length} items completed (${percentage}%)`;
+            }
+            if (progressBar) {
+                progressBar.style.width = `${percentage}%`;
+            }
         }
 
         // Get visible items based on filters
         function getVisibleItems() {
             const items = [];
+            if (!checklistData) return items;
+            
             checklistData.phases.forEach(phase => {
                 phase.sections.forEach(section => {
                     if (shouldShowSection(section)) {
@@ -605,20 +507,93 @@
             reader.readAsText(file);
         }
 
-        // Render resources
-        function renderResources() {
-            const container = document.getElementById('resource-links');
-            container.innerHTML = checklistData.resources.map(resource => `
-                <a href="${resource.url}" target="_blank" class="resource-link">
-                    <span>🔗</span>
-                    <span>${resource.title}</span>
-                </a>
-            `).join('');
+        // Handle project type change
+        function handleProjectTypeChange(e) {
+            projectType = e.target.value;
+            saveState();
+            calculateProgress();
+            renderPhases();
+        }
+
+        // Handle search input
+        function handleSearchInput(e) {
+            searchTerm = e.target.value;
+            renderPhases();
+            calculateProgress();
+        }
+
+        // Render the entire app
+        function renderApp() {
+            document.getElementById('app').innerHTML = `
+                <div class="checklist-container">
+                    <!-- Header -->
+                    <div class="header">
+                        <h1>${checklistData.metadata.title}</h1>
+                        <div class="progress-section">
+                            <div>
+                                <strong>Progress:</strong> <span id="progress-text">0 of 0 items completed (0%)</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="controls">
+                        <select class="project-selector" id="project-type" onchange="handleProjectTypeChange(event)">
+                            <option value="both">All Items</option>
+                            <option value="map">MAP Only ($500K-$10M)</option>
+                            <option value="map-lite">MAP Lite ($100K-$500K)</option>
+                        </select>
+                        
+                        <div class="search-box">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" class="search-input" placeholder="Search checklist items..." 
+                                   id="search-input" oninput="handleSearchInput(event)">
+                        </div>
+                        
+                        <button class="button button-secondary" onclick="exportProgress()">
+                            📥 Export
+                        </button>
+                        
+                        <label class="button button-secondary" style="margin: 0">
+                            📤 Import
+                            <input type="file" style="display: none" accept=".json" onchange="importProgress(event)">
+                        </label>
+                    </div>
+
+                    <!-- Resources -->
+                    <div class="resources">
+                        <h2>Important Resources</h2>
+                        <div class="resource-links">
+                            ${checklistData.resources.map(resource => `
+                                <a href="${resource.url}" target="_blank" class="resource-link">
+                                    <span>🔗</span>
+                                    <span>${resource.title}</span>
+                                </a>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Phases -->
+                    <div id="phases-container"></div>
+                </div>
+            `;
+            
+            // Set initial values
+            document.getElementById('project-type').value = projectType;
+            document.getElementById('search-input').value = searchTerm;
+            
+            // Render phases
+            renderPhases();
         }
 
         // Render phases
         function renderPhases() {
             const container = document.getElementById('phases-container');
+            if (!container) return;
+            
             container.innerHTML = checklistData.phases.map(phase => {
                 const isExpanded = expandedPhases[phase.id];
                 const hasVisibleSections = phase.sections.some(section => shouldShowSection(section));
@@ -686,28 +661,8 @@
             }).join('');
         }
 
-        // Event listeners
-        document.getElementById('project-type').addEventListener('change', function(e) {
-            projectType = e.target.value;
-            saveState();
-            calculateProgress();
-            renderPhases();
-        });
-
-        document.getElementById('search-input').addEventListener('input', function(e) {
-            searchTerm = e.target.value;
-            renderPhases();
-            calculateProgress();
-        });
-
-        // Initialize
-        loadState();
-        renderResources();
-        renderPhases();
-        calculateProgress();
-        
-        // Set initial values
-        document.getElementById('project-type').value = projectType;
+        // Start the application
+        window.addEventListener('DOMContentLoaded', loadChecklistData);
     </script>
 </body>
 </html>
