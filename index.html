@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MAP Migration Checklist</title>
+    <title>MAP Migration Guide</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
             background: #f5f5f5;
+            color: #333;
         }
         
         .loading {
@@ -26,7 +27,7 @@
             border-radius: 8px;
         }
         
-        .checklist-container {
+        .guide-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
@@ -35,36 +36,29 @@
         .header {
             background: white;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 32px;
+            margin-bottom: 24px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
         }
         
         .header h1 {
-            margin: 0 0 16px 0;
+            margin: 0 0 8px 0;
             color: #1a1a1a;
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: 600;
         }
         
-        .progress-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
+        .header .subtitle {
+            color: #666;
+            font-size: 16px;
+            margin: 0;
         }
         
-        .progress-bar {
-            width: 200px;
-            height: 8px;
-            background: #e5e5e5;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: #0073e6;
-            transition: width 0.3s ease;
+        .header .version {
+            color: #999;
+            font-size: 14px;
+            margin-top: 8px;
         }
         
         .controls {
@@ -85,6 +79,7 @@
             border-radius: 4px;
             font-size: 14px;
             background: white;
+            cursor: pointer;
         }
         
         .search-box {
@@ -113,14 +108,15 @@
             background: #e6f3ff;
             border: 1px solid #b3d9ff;
             border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
         }
         
         .resources h2 {
-            margin: 0 0 12px 0;
+            margin: 0 0 16px 0;
             color: #0052cc;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 600;
         }
         
         .resource-links {
@@ -136,10 +132,14 @@
             align-items: center;
             gap: 8px;
             font-size: 14px;
+            padding: 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
         
         .resource-link:hover {
-            text-decoration: underline;
+            background: rgba(0, 82, 204, 0.1);
+            text-decoration: none;
         }
         
         .phase {
@@ -151,12 +151,13 @@
         }
         
         .phase-header {
-            padding: 16px;
+            padding: 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
             transition: background 0.2s;
+            border-bottom: 1px solid #f0f0f0;
         }
         
         .phase-header:hover {
@@ -164,14 +165,16 @@
         }
         
         .phase-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 600;
             margin: 0;
+            color: #1a1a1a;
         }
         
         .phase-content {
             display: none;
-            padding: 0 16px 16px;
+            padding: 24px;
+            background: #fafafa;
         }
         
         .phase-content.active {
@@ -179,25 +182,28 @@
         }
         
         .section {
-            background: #f8f8f8;
+            background: white;
             border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e5e5;
         }
         
         .section-title {
             font-weight: 600;
-            margin: 0 0 12px 0;
+            font-size: 16px;
+            margin: 0 0 16px 0;
             display: flex;
             align-items: center;
             gap: 8px;
+            color: #333;
         }
         
         .badge {
             font-size: 11px;
-            padding: 2px 8px;
+            padding: 3px 8px;
             border-radius: 12px;
-            font-weight: normal;
+            font-weight: 500;
         }
         
         .badge-map {
@@ -210,24 +216,30 @@
             color: #065f46;
         }
         
-        .checklist-item {
+        .guide-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .guide-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-header {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 8px;
+        }
+        
+        .item-number {
+            background: #f0f0f0;
+            color: #666;
+            padding: 2px 8px;
             border-radius: 4px;
-            transition: background 0.2s;
-        }
-        
-        .checklist-item:hover {
-            background: white;
-        }
-        
-        .checkbox {
-            width: 18px;
-            height: 18px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
             margin-top: 2px;
-            cursor: pointer;
         }
         
         .item-content {
@@ -235,14 +247,10 @@
         }
         
         .item-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 4px;
-        }
-        
-        .item-text.completed {
-            text-decoration: line-through;
-            color: #666;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0 0 8px 0;
+            color: #333;
         }
         
         .required-badge {
@@ -252,6 +260,7 @@
             padding: 2px 6px;
             border-radius: 4px;
             margin-left: 8px;
+            font-weight: 600;
         }
         
         .tooltip {
@@ -263,31 +272,48 @@
         .tooltip-icon {
             color: #999;
             font-size: 14px;
-            margin-left: 4px;
+            margin-left: 6px;
+            vertical-align: middle;
         }
         
         .tooltip-text {
             visibility: hidden;
-            width: 250px;
+            width: 280px;
             background-color: #333;
             color: white;
             text-align: left;
             border-radius: 6px;
-            padding: 8px;
+            padding: 10px;
             position: absolute;
-            z-index: 1;
+            z-index: 1000;
             bottom: 125%;
             left: 50%;
-            margin-left: -125px;
+            margin-left: -140px;
             opacity: 0;
             transition: opacity 0.3s;
-            font-size: 12px;
-            line-height: 1.4;
+            font-size: 13px;
+            line-height: 1.5;
+            font-weight: normal;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
         .tooltip:hover .tooltip-text {
             visibility: visible;
             opacity: 1;
+        }
+        
+        .item-description {
+            font-size: 14px;
+            color: #666;
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+        
+        .item-links {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
         }
         
         .item-link {
@@ -297,139 +323,102 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            margin-top: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background 0.2s;
         }
         
         .item-link:hover {
-            text-decoration: underline;
+            background: rgba(0, 82, 204, 0.1);
         }
         
         .chevron {
             transition: transform 0.2s;
+            color: #666;
+            font-size: 20px;
         }
         
         .chevron.rotated {
             transform: rotate(90deg);
         }
         
-        .button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
         }
         
-        .button-secondary {
-            background: #e5e5e5;
-            color: #333;
-        }
-        
-        .button-secondary:hover {
-            background: #d4d4d4;
+        @media (max-width: 768px) {
+            .guide-container {
+                padding: 12px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .resource-links {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div id="app">
-        <div class="loading">Loading checklist...</div>
+        <div class="loading">Loading guide...</div>
     </div>
 
     <script>
         // Global variables
-        let checklistData = null;
-        let checkedItems = {};
+        let guideData = null;
         let expandedPhases = {};
         let projectType = 'both';
         let searchTerm = '';
 
-        // Load checklist data from JSON file
-        async function loadChecklistData() {
+        // Load guide data from JSON file
+        async function loadGuideData() {
             try {
                 const response = await fetch('checklist-data.json');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                checklistData = await response.json();
+                guideData = await response.json();
+                
+                // Initialize all phases as expanded
+                guideData.phases.forEach(phase => {
+                    expandedPhases[phase.id] = true;
+                });
+                
                 initializeApp();
             } catch (error) {
                 document.getElementById('app').innerHTML = `
                     <div class="error">
-                        <h2>Error Loading Checklist</h2>
+                        <h2>Error Loading Guide</h2>
                         <p>${error.message}</p>
                         <p>Please ensure checklist-data.json is in the same directory as index.html</p>
                     </div>
                 `;
-                console.error('Error loading checklist data:', error);
+                console.error('Error loading guide data:', error);
             }
         }
 
         // Initialize the application
         function initializeApp() {
-            loadState();
             renderApp();
-            calculateProgress();
-        }
-
-        // Load saved state
-        function loadState() {
-            const saved = localStorage.getItem('mapChecklistProgress');
-            if (saved) {
-                const data = JSON.parse(saved);
-                checkedItems = data.checkedItems || {};
-                expandedPhases = data.expandedPhases || {};
-                projectType = data.projectType || 'both';
-            }
-        }
-
-        // Save state
-        function saveState() {
-            localStorage.setItem('mapChecklistProgress', JSON.stringify({
-                checkedItems,
-                expandedPhases,
-                projectType,
-                lastUpdated: new Date().toISOString()
-            }));
-        }
-
-        // Calculate progress
-        function calculateProgress() {
-            const visibleItems = getVisibleItems();
-            const checkedCount = visibleItems.filter(id => checkedItems[id]).length;
-            const percentage = visibleItems.length > 0 ? Math.round((checkedCount / visibleItems.length) * 100) : 0;
-            
-            const progressText = document.getElementById('progress-text');
-            const progressBar = document.getElementById('progress-bar');
-            
-            if (progressText) {
-                progressText.textContent = `${checkedCount} of ${visibleItems.length} items completed (${percentage}%)`;
-            }
-            if (progressBar) {
-                progressBar.style.width = `${percentage}%`;
-            }
-        }
-
-        // Get visible items based on filters
-        function getVisibleItems() {
-            const items = [];
-            if (!checklistData) return items;
-            
-            checklistData.phases.forEach(phase => {
-                phase.sections.forEach(section => {
-                    if (shouldShowSection(section)) {
-                        section.items.forEach(item => {
-                            if (shouldShowItem(item)) {
-                                items.push(item.id);
-                            }
-                        });
-                    }
-                });
-            });
-            return items;
         }
 
         // Check if section should be shown
@@ -441,77 +430,21 @@
         // Check if item should be shown
         function shouldShowItem(item) {
             if (!searchTerm) return true;
-            return item.text.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                   (item.tooltip && item.tooltip.toLowerCase().includes(searchTerm.toLowerCase()));
-        }
-
-        // Toggle checkbox
-        function toggleCheck(itemId) {
-            checkedItems[itemId] = !checkedItems[itemId];
-            saveState();
-            calculateProgress();
-            renderPhases();
+            const searchLower = searchTerm.toLowerCase();
+            return item.text.toLowerCase().includes(searchLower) ||
+                   (item.tooltip && item.tooltip.toLowerCase().includes(searchLower)) ||
+                   (item.links && item.links.some(link => link.text.toLowerCase().includes(searchLower)));
         }
 
         // Toggle phase expansion
         function togglePhase(phaseId) {
             expandedPhases[phaseId] = !expandedPhases[phaseId];
-            saveState();
             renderPhases();
-        }
-
-        // Export progress
-        function exportProgress() {
-            const data = {
-                checklistData,
-                progress: {
-                    checkedItems,
-                    expandedPhases,
-                    projectType,
-                    lastUpdated: new Date().toISOString()
-                }
-            };
-            
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `MAP_Checklist_Progress_${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // Import progress
-        function importProgress(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.progress) {
-                        checkedItems = data.progress.checkedItems || {};
-                        expandedPhases = data.progress.expandedPhases || {};
-                        projectType = data.progress.projectType || 'both';
-                        document.getElementById('project-type').value = projectType;
-                        saveState();
-                        calculateProgress();
-                        renderPhases();
-                        alert('Progress imported successfully!');
-                    }
-                } catch (error) {
-                    alert('Error importing file: ' + error.message);
-                }
-            };
-            reader.readAsText(file);
         }
 
         // Handle project type change
         function handleProjectTypeChange(e) {
             projectType = e.target.value;
-            saveState();
-            calculateProgress();
             renderPhases();
         }
 
@@ -519,24 +452,17 @@
         function handleSearchInput(e) {
             searchTerm = e.target.value;
             renderPhases();
-            calculateProgress();
         }
 
         // Render the entire app
         function renderApp() {
             document.getElementById('app').innerHTML = `
-                <div class="checklist-container">
+                <div class="guide-container">
                     <!-- Header -->
                     <div class="header">
-                        <h1>${checklistData.metadata.title}</h1>
-                        <div class="progress-section">
-                            <div>
-                                <strong>Progress:</strong> <span id="progress-text">0 of 0 items completed (0%)</span>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progress-bar" style="width: 0%"></div>
-                            </div>
-                        </div>
+                        <h1>${guideData.metadata.title}</h1>
+                        <p class="subtitle">Comprehensive guide for AWS Migration Acceleration Program projects</p>
+                        <p class="version">Version ${guideData.metadata.version} • Last Updated: ${guideData.metadata.lastUpdated}</p>
                     </div>
 
                     <!-- Controls -->
@@ -549,25 +475,16 @@
                         
                         <div class="search-box">
                             <span class="search-icon">🔍</span>
-                            <input type="text" class="search-input" placeholder="Search checklist items..." 
+                            <input type="text" class="search-input" placeholder="Search guide items..." 
                                    id="search-input" oninput="handleSearchInput(event)">
                         </div>
-                        
-                        <button class="button button-secondary" onclick="exportProgress()">
-                            📥 Export
-                        </button>
-                        
-                        <label class="button button-secondary" style="margin: 0">
-                            📤 Import
-                            <input type="file" style="display: none" accept=".json" onchange="importProgress(event)">
-                        </label>
                     </div>
 
                     <!-- Resources -->
                     <div class="resources">
-                        <h2>Important Resources</h2>
+                        <h2>📚 Important Resources</h2>
                         <div class="resource-links">
-                            ${checklistData.resources.map(resource => `
+                            ${guideData.resources.map(resource => `
                                 <a href="${resource.url}" target="_blank" class="resource-link">
                                     <span>🔗</span>
                                     <span>${resource.title}</span>
@@ -581,10 +498,6 @@
                 </div>
             `;
             
-            // Set initial values
-            document.getElementById('project-type').value = projectType;
-            document.getElementById('search-input').value = searchTerm;
-            
             // Render phases
             renderPhases();
         }
@@ -594,11 +507,17 @@
             const container = document.getElementById('phases-container');
             if (!container) return;
             
-            container.innerHTML = checklistData.phases.map(phase => {
+            let hasResults = false;
+            
+            const phasesHtml = guideData.phases.map(phase => {
                 const isExpanded = expandedPhases[phase.id];
-                const hasVisibleSections = phase.sections.some(section => shouldShowSection(section));
+                const hasVisibleSections = phase.sections.some(section => {
+                    if (!shouldShowSection(section)) return false;
+                    return section.items.some(item => shouldShowItem(item));
+                });
                 
                 if (!hasVisibleSections) return '';
+                hasResults = true;
                 
                 return `
                     <div class="phase">
@@ -624,30 +543,31 @@
                                         </h3>
                                         <div>
                                             ${visibleItems.map(item => `
-                                                <div class="checklist-item">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        class="checkbox"
-                                                        ${checkedItems[item.id] ? 'checked' : ''}
-                                                        onchange="toggleCheck('${item.id}')"
-                                                    >
-                                                    <div class="item-content">
-                                                        <div class="item-text ${checkedItems[item.id] ? 'completed' : ''}">
-                                                            ${item.text}
-                                                            ${item.required ? '<span class="required-badge">Required</span>' : ''}
-                                                            ${item.tooltip ? `
-                                                                <span class="tooltip">
-                                                                    <span class="tooltip-icon">ⓘ</span>
-                                                                    <span class="tooltip-text">${item.tooltip}</span>
-                                                                </span>
+                                                <div class="guide-item">
+                                                    <div class="item-header">
+                                                        <span class="item-number">${item.id}</span>
+                                                        <div class="item-content">
+                                                            <p class="item-text">
+                                                                ${item.text}
+                                                                ${item.required ? '<span class="required-badge">Required</span>' : ''}
+                                                                ${item.tooltip ? `
+                                                                    <span class="tooltip">
+                                                                        <span class="tooltip-icon">ⓘ</span>
+                                                                        <span class="tooltip-text">${item.tooltip}</span>
+                                                                    </span>
+                                                                ` : ''}
+                                                            </p>
+                                                            ${item.links && item.links.length > 0 ? `
+                                                                <div class="item-links">
+                                                                    ${item.links.map(link => `
+                                                                        <a href="${link.url}" target="_blank" class="item-link">
+                                                                            <span>📄</span>
+                                                                            <span>${link.text}</span>
+                                                                        </a>
+                                                                    `).join('')}
+                                                                </div>
                                                             ` : ''}
                                                         </div>
-                                                        ${item.links && item.links.map(link => `
-                                                            <a href="${link.url}" target="_blank" class="item-link">
-                                                                <span>🔗</span>
-                                                                <span>${link.text}</span>
-                                                            </a>
-                                                        `).join('')}
                                                     </div>
                                                 </div>
                                             `).join('')}
@@ -659,10 +579,21 @@
                     </div>
                 `;
             }).join('');
+            
+            if (!hasResults && searchTerm) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <p>No items found matching "${searchTerm}"</p>
+                        <p>Try adjusting your search terms or filters</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = phasesHtml;
+            }
         }
 
         // Start the application
-        window.addEventListener('DOMContentLoaded', loadChecklistData);
+        window.addEventListener('DOMContentLoaded', loadGuideData);
     </script>
 </body>
 </html>
