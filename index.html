@@ -463,37 +463,74 @@
             renderPhases();
         }
 
-        // Load guide data with fallback
+        // JSONP callback function
+        window.handleChecklistData = function(data) {
+            // Remove script tag after execution
+            const script = document.getElementById('jsonp-script');
+            if (script) {
+                script.remove();
+            }
+            
+            // Check if it's an error response
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            // Success! Use the API data
+            guideData = data;
+            dataSource = 'api';
+            
+            // Show secure status
+            showSecurityStatus('secure', 'Connected securely via nclouds.com API');
+            
+            // Initialize all phases as collapsed
+            guideData.phases.forEach(phase => {
+                expandedPhases[phase.id] = false;
+            });
+            
+            // Initialize the app
+            initializeApp();
+        };
+
+        // Load guide data with JSONP fallback
         async function loadGuideData() {
             // Update loading message
             document.querySelector('.loading p').textContent = 'Loading secure checklist data...';
             
             try {
-                // Try the secure API
-                console.log('Loading from secure API...');
-                const response = await fetch(APPS_SCRIPT_URL, {
-                    method: 'GET',
-                    mode: 'cors',
-                    credentials: 'omit' // Don't send cookies - not needed with "Execute as: Me"
+                // Try JSONP approach for cross-origin requests
+                console.log('Loading from secure API via JSONP...');
+                
+                // Create promise for JSONP
+                const jsonpPromise = new Promise((resolve, reject) => {
+                    // Set timeout for JSONP request
+                    const timeout = setTimeout(() => {
+                        reject(new Error('JSONP request timeout'));
+                    }, 10000); // 10 second timeout
+                    
+                    // Create temporary callback
+                    const tempCallback = window.handleChecklistData;
+                    window.handleChecklistData = function(data) {
+                        clearTimeout(timeout);
+                        tempCallback(data);
+                        resolve();
+                    };
+                    
+                    // Create script element for JSONP
+                    const script = document.createElement('script');
+                    script.id = 'jsonp-script';
+                    script.src = APPS_SCRIPT_URL + '?callback=handleChecklistData';
+                    script.onerror = () => {
+                        clearTimeout(timeout);
+                        reject(new Error('JSONP script failed to load'));
+                    };
+                    
+                    // Add script to document
+                    document.body.appendChild(script);
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                // Check if it's an error response
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                // Success! Use the API data
-                guideData = data;
-                dataSource = 'api';
-                
-                // Show secure status
-                showSecurityStatus('secure', 'Connected securely via nclouds.com API');
+                // Wait for JSONP to complete
+                await jsonpPromise;
                 
             } catch (apiError) {
                 console.error('API Error:', apiError);
@@ -514,21 +551,19 @@
                     // Show fallback status with clearer message
                     showSecurityStatus('fallback', 'Using local data file - API connection failed');
                     
+                    // Initialize all phases as collapsed
+                    guideData.phases.forEach(phase => {
+                        expandedPhases[phase.id] = false;
+                    });
+                    
+                    // Initialize the app
+                    initializeApp();
+                    
                 } catch (localError) {
                     console.error('Local file error:', localError);
                     showLoadingError(apiError, localError);
                     return;
                 }
-            }
-            
-            // Initialize the app with the loaded data
-            if (guideData) {
-                // Initialize all phases as collapsed
-                guideData.phases.forEach(phase => {
-                    expandedPhases[phase.id] = false;
-                });
-                
-                initializeApp();
             }
         }
 
