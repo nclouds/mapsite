@@ -1,264 +1,293 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>MAP Migration Guide</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAP Migration Project Checklist</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            padding: 0;
-            background: #f5f5f5;
+            padding: 20px;
+            background-color: #f5f5f5;
             color: #333;
         }
         
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-            color: #666;
-        }
-        
-        .error {
-            text-align: center;
-            padding: 50px;
-            color: #dc2626;
-            background: #fee2e2;
-            margin: 20px;
-            border-radius: 8px;
-        }
-        
-        .guide-container {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .header {
             background: white;
+            padding: 30px;
             border-radius: 8px;
-            padding: 24px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
-        .header-content {
+        h1 {
+            color: #232f3e;
+            border-bottom: 3px solid #ff9900;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        
+        /* Security Status Banner */
+        .security-status {
+            padding: 12px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            max-height: 60px;
-            width: auto;
-        }
-        
-        .header-text {
-            text-align: left;
-        }
-        
-        .header h1 {
-            margin: 0 0 8px 0;
-            color: #1a1a1a;
-            font-size: 32px;
-            font-weight: 600;
-        }
-        
-        .header .subtitle {
-            color: #666;
-            font-size: 16px;
-            margin: 0;
-        }
-        
-        .header .version {
-            color: #999;
+            gap: 10px;
             font-size: 14px;
-            margin-top: 8px;
         }
         
+        .security-status.secure {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .security-status.fallback {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        
+        .security-status.error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .security-icon {
+            font-size: 18px;
+        }
+        
+        /* Loading and Error States */
+        .loading, .error {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .loading h2, .error h2 {
+            color: #232f3e;
+            margin-bottom: 20px;
+        }
+        
+        .loading p, .error p {
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff9900;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Controls */
         .controls {
-            background: white;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: grid;
-            grid-template-columns: auto auto 1fr auto;
-            gap: 12px;
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
             align-items: center;
         }
         
-        .project-selector {
-            padding: 8px 16px;
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .control-group label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        select, input[type="text"] {
+            padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
             background: white;
-            cursor: pointer;
-            min-width: 150px;
         }
         
-        .search-box {
-            position: relative;
-            width: 100%;
-            min-width: 200px;
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
         }
         
-        .search-input {
-            width: 100%;
-            padding: 8px 16px 8px 36px;
-            border: 1px solid #ddd;
+        button, .button {
+            background: #232f3e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
             border-radius: 4px;
+            cursor: pointer;
             font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s;
         }
         
-        .search-icon {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #666;
+        button:hover, .button:hover {
+            background: #131a22;
         }
         
+        .button-small {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        
+        /* Resources */
         .resources {
-            background: #e6f3ff;
-            border: 1px solid #b3d9ff;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
         }
         
         .resources h2 {
-            margin: 0 0 12px 0;
-            color: #0052cc;
-            font-size: 18px;
-            font-weight: 600;
+            color: #232f3e;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 20px;
         }
         
         .resource-links {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 12px;
+            gap: 10px;
         }
         
         .resource-link {
-            color: #0052cc;
-            text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            padding: 6px;
+            gap: 8px;
+            color: #0073bb;
+            text-decoration: none;
+            padding: 8px;
             border-radius: 4px;
-            transition: background 0.2s;
+            transition: background-color 0.2s;
         }
         
         .resource-link:hover {
-            background: rgba(0, 82, 204, 0.1);
-            text-decoration: none;
+            background: rgba(0, 115, 187, 0.1);
         }
         
+        /* Phases */
         .phase {
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             overflow: hidden;
         }
         
         .phase-header {
-            padding: 16px;
+            background: #232f3e;
+            color: white;
+            padding: 15px 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: background 0.2s;
-            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
         }
         
         .phase-header:hover {
-            background: #f8f8f8;
+            background: #131a22;
         }
         
         .phase-title {
+            margin: 0;
             font-size: 18px;
             font-weight: 600;
-            margin: 0;
-            color: #1a1a1a;
+        }
+        
+        .chevron {
+            transition: transform 0.3s;
+            font-size: 14px;
+        }
+        
+        .chevron.rotated {
+            transform: rotate(90deg);
         }
         
         .phase-content {
-            display: none;
-            padding: 16px;
+            padding: 20px;
             background: #fafafa;
+            display: none;
         }
         
-        .phase-content.active {
+        .phase-content.expanded {
             display: block;
         }
         
+        /* Sections */
         .section {
             background: white;
+            padding: 20px;
+            margin-bottom: 15px;
             border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid #e5e5e5;
+            border: 1px solid #e0e0e0;
         }
         
         .section-title {
             font-weight: 600;
-            font-size: 15px;
-            margin: 0 0 12px 0;
+            margin-bottom: 15px;
+            color: #232f3e;
             display: flex;
             align-items: center;
-            gap: 8px;
-            color: #333;
-        }
-        
-        .badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        
-        .badge-map {
-            background: #e9d5ff;
-            color: #6b21a8;
-        }
-        
-        .badge-lite {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .guide-item {
-            padding: 8px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .guide-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-        
-        .item-header {
-            display: flex;
-            align-items: flex-start;
             gap: 10px;
         }
         
-        .item-number {
-            background: #f0f0f0;
-            color: #666;
-            padding: 2px 8px;
+        .applicability-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: normal;
+        }
+        
+        .applicability-badge.map-only {
+            background: #e8e0ff;
+            color: #6633cc;
+        }
+        
+        .applicability-badge.map-lite-only {
+            background: #d4f4dd;
+            color: #00875a;
+        }
+        
+        /* Items */
+        .item {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            padding: 10px;
             border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
+            transition: background-color 0.2s;
+        }
+        
+        .item:hover {
+            background: #f5f5f5;
+        }
+        
+        .item input[type="checkbox"] {
             margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
         }
         
         .item-content {
@@ -266,180 +295,124 @@
         }
         
         .item-text {
-            font-size: 14px;
-            line-height: 1.5;
-            margin: 0 0 4px 0;
-            color: #333;
+            display: inline;
         }
         
-        .required-badge {
-            font-size: 11px;
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-left: 8px;
-            font-weight: 600;
+        .item-text.completed {
+            text-decoration: line-through;
+            color: #666;
         }
         
         .tooltip {
-            position: relative;
             display: inline-block;
-            cursor: help;
-        }
-        
-        .tooltip-icon {
-            color: #999;
-            font-size: 14px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        
-        .tooltip-text {
-            visibility: hidden;
-            width: 280px;
-            background-color: #333;
-            color: white;
-            text-align: left;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -140px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 12px;
-            line-height: 1.4;
-            font-weight: normal;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        
-        .item-description {
-            font-size: 14px;
+            margin-left: 5px;
             color: #666;
-            margin: 8px 0;
-            line-height: 1.5;
+            cursor: help;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 20px;
+            top: -5px;
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            white-space: normal;
+            width: 250px;
+            z-index: 10;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .required-badge {
+            display: inline-block;
+            background: #fee;
+            color: #c00;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 5px;
+        }
+        
+        .responsible-badge {
+            display: inline-block;
+            background: #e3f2fd;
+            color: #1976d2;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-left: 5px;
         }
         
         .item-links {
-            margin-top: 4px;
+            margin-top: 5px;
             display: flex;
+            gap: 15px;
             flex-wrap: wrap;
-            gap: 8px;
         }
         
         .item-link {
-            color: #0052cc;
-            text-decoration: none;
-            font-size: 13px;
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: background 0.2s;
+            color: #0073bb;
+            text-decoration: none;
+            font-size: 13px;
         }
         
         .item-link:hover {
-            background: rgba(0, 82, 204, 0.1);
+            text-decoration: underline;
         }
         
-        .chevron {
-            transition: transform 0.2s;
+        /* Progress */
+        .progress-info {
+            text-align: right;
             color: #666;
-            font-size: 20px;
+            font-size: 14px;
         }
         
-        .chevron.rotated {
-            transform: rotate(90deg);
-        }
-        
+        /* No results */
         .no-results {
             text-align: center;
             padding: 40px;
             color: #666;
-            font-size: 16px;
         }
         
-        .button-group {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .button-small {
-            padding: 6px 12px;
-            border: 1px solid #ddd;
+        /* Fallback mode notice */
+        .fallback-notice {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f0f0f0;
             border-radius: 4px;
             font-size: 13px;
-            cursor: pointer;
-            background: white;
-            transition: background 0.2s;
+            color: #666;
         }
         
-        .button-small:hover {
-            background: #f0f0f0;
+        .fallback-notice a {
+            color: #0073bb;
+            text-decoration: none;
         }
         
-        @media (max-width: 768px) {
-            .guide-container {
-                padding: 12px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header-content {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .header-text {
-                text-align: center;
-            }
-            
-            .logo {
-                max-height: 50px;
-            }
-            
-            .header h1 {
-                font-size: 24px;
-            }
-            
-            .controls {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .project-selector {
-                width: 100%;
-            }
-            
-            .search-box {
-                width: 100%;
-            }
-            
-            .button-group {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .resource-links {
-                grid-template-columns: 1fr;
-            }
+        .fallback-notice a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div id="app">
-        <div class="loading">Loading guide...</div>
+    <div class="container">
+        <h1>MAP Migration Project Checklist</h1>
+        <div id="security-status"></div>
+        <div id="app">
+            <div class="loading">
+                <h2>Loading MAP Checklist...</h2>
+                <div class="spinner"></div>
+                <p>Authenticating with nclouds.com...</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -450,7 +423,11 @@
         let searchTerm = '';
         let responsibleFilter = '';
         let allResponsibleParties = [];
+        let dataSource = 'none'; // 'api', 'local', or 'none'
 
+        // Apps Script Web App URL
+        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbxNoeVM3t0WNZmp1KKJQxpeem7J3q_ATpvrozVicxnlIZ5pZvMaemc6bG_nFzlNHdaTFQ/exec';
+        
         // Define all handler functions in global scope
         window.togglePhase = function(phaseId) {
             expandedPhases[phaseId] = !expandedPhases[phaseId];
@@ -486,57 +463,159 @@
             renderPhases();
         }
 
-        // Load guide data from JSON file or Google Doc
+        // Load guide data with fallback
         async function loadGuideData() {
+            // Update loading message
+            document.querySelector('.loading p').textContent = 'Connecting to secure API...';
+            
             try {
-                // Option 1: Load from Google Doc (uncomment and add your doc ID)
-                // const GOOGLE_DOC_ID = 'YOUR_GOOGLE_DOC_ID_HERE';
-                // const url = `https://docs.google.com/document/d/${GOOGLE_DOC_ID}/export?format=txt`;
-                
-                // Option 2: Load from Google Drive direct link (if you have a shared JSON file)
-                // const url = 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID_HERE';
-                
-                // Option 3: Load from local file (default)
-                const url = 'checklist-data.json';
-                
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // For Google Docs export, you might need to clean the text
-                const text = await response.text();
-                
-                // Try to parse as JSON
-                try {
-                    guideData = JSON.parse(text);
-                } catch (parseError) {
-                    // If parsing fails, try to extract JSON from the document
-                    // This handles cases where Google Docs adds formatting
-                    const jsonMatch = text.match(/\{[\s\S]*\}/);
-                    if (jsonMatch) {
-                        guideData = JSON.parse(jsonMatch[0]);
-                    } else {
-                        throw parseError;
+                // First try the secure API
+                console.log('Attempting to load from secure API...');
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'GET',
+                    credentials: 'include', // Important for authentication
+                    headers: {
+                        'Accept': 'application/json',
                     }
+                });
+                
+                const responseText = await response.text();
+                console.log('API Response status:', response.status);
+                
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error('Failed to parse API response:', responseText);
+                    throw new Error('Invalid response from API');
                 }
                 
-                // Initialize all phases as collapsed (was expanded)
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || `API error: ${response.status}`);
+                }
+                
+                // Success! Use the API data
+                guideData = result.data;
+                dataSource = 'api';
+                
+                // Show secure status
+                showSecurityStatus('secure', `Connected securely as ${result.user}`);
+                
+            } catch (apiError) {
+                console.error('API Error:', apiError);
+                
+                // Check if it's an authentication error
+                if (apiError.message.includes('Access denied') || apiError.message.includes('Authentication required')) {
+                    // Show authentication error
+                    showAuthenticationError(apiError.message);
+                    return;
+                }
+                
+                // For other errors, try fallback to local JSON
+                console.log('Falling back to local JSON file...');
+                document.querySelector('.loading p').textContent = 'Loading from local file...';
+                
+                try {
+                    const localResponse = await fetch('checklist-data.json');
+                    if (!localResponse.ok) {
+                        throw new Error(`Failed to load local file: ${localResponse.status}`);
+                    }
+                    
+                    guideData = await localResponse.json();
+                    dataSource = 'local';
+                    
+                    // Show fallback status
+                    showSecurityStatus('fallback', 'Using local data file (not authenticated)');
+                    
+                } catch (localError) {
+                    console.error('Local file error:', localError);
+                    showLoadingError(apiError, localError);
+                    return;
+                }
+            }
+            
+            // Initialize the app with the loaded data
+            if (guideData) {
+                // Initialize all phases as collapsed
                 guideData.phases.forEach(phase => {
                     expandedPhases[phase.id] = false;
                 });
                 
                 initializeApp();
-            } catch (error) {
-                document.getElementById('app').innerHTML = `
-                    <div class="error">
-                        <h2>Error Loading Guide</h2>
-                        <p>${error.message}</p>
-                        <p>Please ensure the JSON source is accessible and contains valid JSON data.</p>
+            }
+        }
+
+        // Show security status banner
+        function showSecurityStatus(type, message) {
+            const statusDiv = document.getElementById('security-status');
+            statusDiv.className = `security-status ${type}`;
+            
+            const icons = {
+                secure: '🔒',
+                fallback: '⚠️',
+                error: '❌'
+            };
+            
+            statusDiv.innerHTML = `
+                <span class="security-icon">${icons[type]}</span>
+                <span>${message}</span>
+            `;
+            
+            if (type === 'fallback') {
+                statusDiv.innerHTML += `
+                    <div class="fallback-notice">
+                        To enable secure access with authentication, please ensure:
+                        <ol style="margin: 5px 0 0 20px; padding: 0;">
+                            <li>You're logged in with your nclouds.com Google account</li>
+                            <li>The Apps Script is properly deployed with "Anyone within nclouds.com" access</li>
+                            <li>You're accessing this page from a secure context</li>
+                        </ol>
+                        <a href="${APPS_SCRIPT_URL}" target="_blank">Test API access directly</a>
                     </div>
                 `;
-                console.error('Error loading guide data:', error);
             }
+        }
+
+        // Show authentication error
+        function showAuthenticationError(errorMessage) {
+            document.getElementById('app').innerHTML = `
+                <div class="error">
+                    <h2>🔒 Authentication Required</h2>
+                    <p>${errorMessage}</p>
+                    <p>This checklist is restricted to nclouds.com employees only.</p>
+                    <p>Please ensure you are:</p>
+                    <ul style="text-align: left; max-width: 400px; margin: 20px auto;">
+                        <li>Logged in with your @nclouds.com Google account</li>
+                        <li>Accessing from an authorized network</li>
+                        <li>Using a supported browser</li>
+                    </ul>
+                    <p style="margin-top: 30px;">
+                        <a href="https://accounts.google.com/signin" target="_blank" class="button">Sign in to Google</a>
+                    </p>
+                    <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                        If you continue to have issues, please contact IT support.
+                    </p>
+                </div>
+            `;
+            showSecurityStatus('error', 'Access denied - Authentication required');
+        }
+
+        // Show loading error
+        function showLoadingError(apiError, localError) {
+            document.getElementById('app').innerHTML = `
+                <div class="error">
+                    <h2>❌ Unable to Load Checklist</h2>
+                    <p>Failed to load checklist data from both secure API and local file.</p>
+                    <div style="text-align: left; max-width: 600px; margin: 20px auto;">
+                        <h3>API Error:</h3>
+                        <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${apiError.message}</pre>
+                        <h3>Local File Error:</h3>
+                        <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto;">${localError.message}</pre>
+                    </div>
+                    <p>Please contact support for assistance.</p>
+                </div>
+            `;
+            showSecurityStatus('error', 'Failed to load checklist data');
         }
 
         // Initialize the application
@@ -554,10 +633,10 @@
                 phase.sections.forEach(section => {
                     section.items.forEach(item => {
                         if (item.responsible) {
-                            // Split by comma and trim each party
-                            const itemParties = item.responsible.split(',').map(p => p.trim());
-                            itemParties.forEach(party => {
-                                if (party) parties.add(party);
+                            // Split by comma and trim
+                            const responsibleList = item.responsible.split(',').map(r => r.trim());
+                            responsibleList.forEach(r => {
+                                if (r) parties.add(r);
                             });
                         }
                     });
@@ -566,96 +645,88 @@
             
             allResponsibleParties = Array.from(parties).sort();
         }
-
-        // Check if section should be shown
+        
+        // Check if section should be shown based on project type
         function shouldShowSection(section) {
             if (projectType === 'both') return true;
             return section.applicability.includes(projectType);
         }
-
-        // Check if item should be shown
+        
+        // Check if item should be shown based on filters
         function shouldShowItem(item) {
-            // Check search term
+            // Search filter
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
-                const matchesSearch = item.text.toLowerCase().includes(searchLower) ||
-                       (item.tooltip && item.tooltip.toLowerCase().includes(searchLower)) ||
-                       (item.links && item.links.some(link => link.text.toLowerCase().includes(searchLower)));
-                if (!matchesSearch) return false;
+                const textMatch = item.text.toLowerCase().includes(searchLower);
+                const tooltipMatch = item.tooltip && item.tooltip.toLowerCase().includes(searchLower);
+                const linkMatch = item.links && item.links.some(link => 
+                    link.text.toLowerCase().includes(searchLower)
+                );
+                
+                if (!textMatch && !tooltipMatch && !linkMatch) {
+                    return false;
+                }
             }
             
-            // Check responsible filter
-            if (responsibleFilter) {
-                if (!item.responsible) return false;
-                const responsibleParties = item.responsible.split(',').map(p => p.trim());
-                if (!responsibleParties.includes(responsibleFilter)) return false;
+            // Responsible party filter
+            if (responsibleFilter && item.responsible) {
+                const responsibleList = item.responsible.split(',').map(r => r.trim());
+                if (!responsibleList.includes(responsibleFilter)) {
+                    return false;
+                }
+            } else if (responsibleFilter && !item.responsible) {
+                return false;
             }
             
             return true;
         }
-
-        // Toggle phase expansion
-        function togglePhase(phaseId) {
-            expandedPhases[phaseId] = !expandedPhases[phaseId];
-            renderPhases();
-        }
-
-        // Handle project type change
-        function handleProjectTypeChange(e) {
-            projectType = e.target.value;
-            renderPhases();
-        }
-
-        // Handle search input
-        function handleSearchInput(e) {
-            searchTerm = e.target.value;
-            renderPhases();
-        }
-
+        
         // Render the entire app
         function renderApp() {
-            document.getElementById('app').innerHTML = `
-                <div class="guide-container">
-                    <!-- Header -->
-                    <div class="header">
-                        <div class="header-content">
-                            <img src="TotalValue Migration Logo Horizontal.jpeg" alt="TotalValue Migration Services" class="logo">
-                            <div class="header-text">
-                                <h1>TotalValue Migration Services Guide</h1>
-                                <p class="subtitle">Comprehensive guide for AWS Migration Acceleration Program projects</p>
-                                <p class="version">Version ${guideData.metadata.version || '1.0'} • Last Updated: ${guideData.metadata.lastUpdated || ''}</p>
-                            </div>
-                        </div>
+            const metadata = guideData.metadata || {};
+            const html = `
+                <div class="header">
+                    <div class="metadata">
+                        ${metadata.version ? `<div>Version: ${metadata.version}</div>` : ''}
+                        ${metadata.lastUpdated ? `<div>Last Updated: ${new Date(metadata.lastUpdated).toLocaleDateString()}</div>` : ''}
                     </div>
-
-                    <!-- Controls -->
-                    <div class="controls">
-                        <select class="project-selector" id="project-type" onchange="handleProjectTypeChange(event)">
-                            <option value="both">All Items</option>
-                            <option value="map">MAP Only ($500K-$10M)</option>
-                            <option value="map-lite">MAP Lite ($100K-$500K)</option>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="project-type">Project Type:</label>
+                        <select id="project-type" onchange="handleProjectTypeChange(event)">
+                            <option value="both">All Projects</option>
+                            <option value="map">MAP Only</option>
+                            <option value="map-lite">MAP Lite Only</option>
                         </select>
-                        
-                        <select class="project-selector" id="responsible-filter" onchange="handleResponsibleChange(event)">
-                            <option value="">All Responsible Parties</option>
-                            ${allResponsibleParties.map(party => 
-                                `<option value="${party}">${party}</option>`
-                            ).join('')}
-                        </select>
-                        
-                        <div class="search-box">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" class="search-input" placeholder="Search guide items..." 
-                                   id="search-input" oninput="handleSearchInput(event)">
-                        </div>
-                        
-                        <div class="button-group">
-                            <button class="button-small" onclick="expandAll()">Expand All</button>
-                            <button class="button-small" onclick="collapseAll()">Collapse All</button>
-                        </div>
                     </div>
+                    
+                    <div class="control-group">
+                        <label for="search">Search:</label>
+                        <input type="text" id="search" placeholder="Search items..." oninput="handleSearchInput(event)">
+                    </div>
+                    
+                    ${allResponsibleParties.length > 0 ? `
+                        <div class="control-group">
+                            <label for="responsible">Filter by Responsible:</label>
+                            <select id="responsible" onchange="handleResponsibleChange(event)">
+                                <option value="">All</option>
+                                ${allResponsibleParties.map(party => 
+                                    `<option value="${party}">${party}</option>`
+                                ).join('')}
+                            </select>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="button-group">
+                        <button class="button-small" onclick="expandAll()">Expand All</button>
+                        <button class="button-small" onclick="collapseAll()">Collapse All</button>
+                    </div>
+                </div>
 
-                    <!-- Resources -->
+                <!-- Resources -->
+                ${guideData.resources && guideData.resources.length > 0 ? `
                     <div class="resources">
                         <h2>📚 Important Resources</h2>
                         <div class="resource-links">
@@ -667,11 +738,21 @@
                             `).join('')}
                         </div>
                     </div>
+                ` : ''}
 
-                    <!-- Phases -->
-                    <div id="phases-container"></div>
-                </div>
+                <!-- Phases -->
+                <div id="phases-container"></div>
             `;
+            
+            document.getElementById('app').innerHTML = html;
+            
+            // Restore control values
+            document.getElementById('project-type').value = projectType;
+            document.getElementById('search').value = searchTerm;
+            const responsibleSelect = document.getElementById('responsible');
+            if (responsibleSelect) {
+                responsibleSelect.value = responsibleFilter;
+            }
             
             // Render phases
             renderPhases();
@@ -700,53 +781,23 @@
                             <h2 class="phase-title">${phase.title}</h2>
                             <span class="chevron ${isExpanded ? 'rotated' : ''}">▶</span>
                         </div>
-                        <div class="phase-content ${isExpanded ? 'active' : ''}">
+                        <div class="phase-content ${isExpanded ? 'expanded' : ''}">
                             ${phase.sections.map(section => {
                                 if (!shouldShowSection(section)) return '';
                                 
                                 const visibleItems = section.items.filter(item => shouldShowItem(item));
                                 if (visibleItems.length === 0) return '';
                                 
+                                const applicabilityBadge = getApplicabilityBadge(section.applicability);
+                                
                                 return `
                                     <div class="section">
                                         <h3 class="section-title">
                                             ${section.title}
-                                            ${section.applicability.includes('map') && !section.applicability.includes('map-lite') ? 
-                                                '<span class="badge badge-map">MAP Only</span>' : ''}
-                                            ${!section.applicability.includes('map') && section.applicability.includes('map-lite') ? 
-                                                '<span class="badge badge-lite">MAP Lite Only</span>' : ''}
+                                            ${applicabilityBadge}
                                         </h3>
-                                        <div>
-                                            ${visibleItems.map(item => `
-                                                <div class="guide-item">
-                                                    <div class="item-header">
-                                                        <span class="item-number">${item.id}</span>
-                                                        <div class="item-content">
-                                                            <p class="item-text">
-                                                                ${item.text}
-                                                                ${item.responsible ? `<span style="color: #666; font-weight: normal;"> (${item.responsible})</span>` : ''}
-                                                                ${item.required ? '<span class="required-badge">Required</span>' : ''}
-                                                                ${item.tooltip ? `
-                                                                    <span class="tooltip">
-                                                                        <span class="tooltip-icon">ⓘ</span>
-                                                                        <span class="tooltip-text">${item.tooltip}</span>
-                                                                    </span>
-                                                                ` : ''}
-                                                            </p>
-                                                            ${item.links && item.links.length > 0 ? `
-                                                                <div class="item-links">
-                                                                    ${item.links.map(link => `
-                                                                        <a href="${link.url}" target="_blank" class="item-link">
-                                                                            <span>📄</span>
-                                                                            <span>${link.text}</span>
-                                                                        </a>
-                                                                    `).join('')}
-                                                                </div>
-                                                            ` : ''}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            `).join('')}
+                                        <div class="items">
+                                            ${visibleItems.map(item => renderItem(item)).join('')}
                                         </div>
                                     </div>
                                 `;
@@ -756,19 +807,71 @@
                 `;
             }).join('');
             
-            if (!hasResults && searchTerm) {
-                container.innerHTML = `
-                    <div class="no-results">
-                        <p>No items found matching "${searchTerm}"</p>
-                        <p>Try adjusting your search terms or filters</p>
-                    </div>
-                `;
+            if (!hasResults) {
+                container.innerHTML = '<div class="no-results">No items match your current filters.</div>';
             } else {
                 container.innerHTML = phasesHtml;
             }
         }
-
-        // Start the application
+        
+        // Get applicability badge HTML
+        function getApplicabilityBadge(applicability) {
+            if (applicability.includes('map') && !applicability.includes('map-lite')) {
+                return '<span class="applicability-badge map-only">MAP Only</span>';
+            } else if (!applicability.includes('map') && applicability.includes('map-lite')) {
+                return '<span class="applicability-badge map-lite-only">MAP Lite Only</span>';
+            }
+            return '';
+        }
+        
+        // Render individual item
+        function renderItem(item) {
+            const itemId = `item-${item.id}`;
+            const isChecked = localStorage.getItem(itemId) === 'true';
+            
+            return `
+                <div class="item">
+                    <input type="checkbox" 
+                           id="${itemId}" 
+                           ${isChecked ? 'checked' : ''} 
+                           onchange="toggleItem('${itemId}')">
+                    <div class="item-content">
+                        <label for="${itemId}" class="item-text ${isChecked ? 'completed' : ''}">
+                            ${item.text}
+                        </label>
+                        ${item.tooltip ? `<span class="tooltip" data-tooltip="${item.tooltip}">ℹ️</span>` : ''}
+                        ${item.required ? '<span class="required-badge">Required</span>' : ''}
+                        ${item.responsible ? `<span class="responsible-badge">${item.responsible}</span>` : ''}
+                        ${item.links && item.links.length > 0 ? `
+                            <div class="item-links">
+                                ${item.links.map(link => `
+                                    <a href="${link.url}" target="_blank" class="item-link">
+                                        <span>🔗</span>
+                                        <span>${link.text}</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Toggle item completion
+        window.toggleItem = function(itemId) {
+            const checkbox = document.getElementById(itemId);
+            const label = checkbox.nextElementSibling.querySelector('.item-text');
+            
+            if (checkbox.checked) {
+                localStorage.setItem(itemId, 'true');
+                label.classList.add('completed');
+            } else {
+                localStorage.removeItem(itemId);
+                label.classList.remove('completed');
+            }
+        }
+        
+        // Start loading when page loads
         window.addEventListener('DOMContentLoaded', loadGuideData);
     </script>
 </body>
