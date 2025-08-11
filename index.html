@@ -425,7 +425,7 @@
         let allResponsibleParties = [];
         let dataSource = 'none'; // 'api', 'local', or 'none'
 
-        // Apps Script Web App URL
+        // Apps Script Web App URL - UPDATE THIS with your current deployment URL!
         const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbxNoeVM3t0WNZmp1KKJQxpeem7J3q_ATpvrozVicxnlIZ5pZvMaemc6bG_nFzlNHdaTFQ/exec';
         
         // Define all handler functions in global scope
@@ -519,7 +519,7 @@
                     // Create script element for JSONP
                     const script = document.createElement('script');
                     script.id = 'jsonp-script';
-                    script.src = APPS_SCRIPT_URL + '?callback=handleChecklistData';
+                    script.src = APPS_SCRIPT_URL + '?callback=handleChecklistData&token=nclouds-map-2024';
                     script.onerror = () => {
                         clearTimeout(timeout);
                         reject(new Error('JSONP script failed to load'));
