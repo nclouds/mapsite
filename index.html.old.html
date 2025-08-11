@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MAP Migration Guide</title>
+    <title>Journey Guide</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
@@ -84,9 +84,9 @@
             padding: 12px;
             margin-bottom: 16px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: grid;
-            grid-template-columns: auto auto 1fr auto;
+            display: flex;
             gap: 12px;
+            flex-wrap: wrap;
             align-items: center;
         }
         
@@ -97,13 +97,13 @@
             font-size: 14px;
             background: white;
             cursor: pointer;
-            min-width: 150px;
         }
         
         .search-box {
-            position: relative;
-            width: 100%;
+            flex: 1;
+            max-width: 400px;
             min-width: 200px;
+            position: relative;
         }
         
         .search-input {
@@ -414,16 +414,13 @@
             }
             
             .controls {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .project-selector {
-                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
             }
             
             .search-box {
                 width: 100%;
+                max-width: none;
             }
             
             .button-group {
@@ -619,7 +616,7 @@
                     <!-- Header -->
                     <div class="header">
                         <div class="header-content">
-                            <img src="TotalValue Migration Logo Horizontal.jpg" alt="TotalValue Migration Services" class="logo">
+                            <img src="TotalValue Migration Logo Horizontal.jpeg" alt="TotalValue Migration Services" class="logo">
                             <div class="header-text">
                                 <h1>TotalValue Migration Services Guide</h1>
                                 <p class="subtitle">Comprehensive guide for AWS Migration Acceleration Program projects</p>
