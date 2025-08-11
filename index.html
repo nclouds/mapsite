@@ -466,52 +466,39 @@
         // Load guide data with fallback
         async function loadGuideData() {
             // Update loading message
-            document.querySelector('.loading p').textContent = 'Connecting to secure API...';
+            document.querySelector('.loading p').textContent = 'Loading secure checklist data...';
             
             try {
-                // First try the secure API
-                console.log('Attempting to load from secure API...');
+                // Try the secure API
+                console.log('Loading from secure API...');
                 const response = await fetch(APPS_SCRIPT_URL, {
                     method: 'GET',
-                    credentials: 'include', // Important for authentication
-                    headers: {
-                        'Accept': 'application/json',
-                    }
+                    mode: 'cors',
+                    credentials: 'omit' // Don't send cookies - not needed with "Execute as: Me"
                 });
                 
-                const responseText = await response.text();
-                console.log('API Response status:', response.status);
-                
-                let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error('Failed to parse API response:', responseText);
-                    throw new Error('Invalid response from API');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 
-                if (!response.ok || !result.success) {
-                    throw new Error(result.error || `API error: ${response.status}`);
+                const data = await response.json();
+                
+                // Check if it's an error response
+                if (data.error) {
+                    throw new Error(data.error);
                 }
                 
                 // Success! Use the API data
-                guideData = result.data;
+                guideData = data;
                 dataSource = 'api';
                 
                 // Show secure status
-                showSecurityStatus('secure', `Connected securely as ${result.user}`);
+                showSecurityStatus('secure', 'Connected securely via nclouds.com API');
                 
             } catch (apiError) {
                 console.error('API Error:', apiError);
                 
-                // Check if it's an authentication error
-                if (apiError.message.includes('Access denied') || apiError.message.includes('Authentication required')) {
-                    // Show authentication error
-                    showAuthenticationError(apiError.message);
-                    return;
-                }
-                
-                // For other errors, try fallback to local JSON
+                // Try fallback to local JSON
                 console.log('Falling back to local JSON file...');
                 document.querySelector('.loading p').textContent = 'Loading from local file...';
                 
@@ -524,8 +511,8 @@
                     guideData = await localResponse.json();
                     dataSource = 'local';
                     
-                    // Show fallback status
-                    showSecurityStatus('fallback', 'Using local data file (not authenticated)');
+                    // Show fallback status with clearer message
+                    showSecurityStatus('fallback', 'Using local data file - API connection failed');
                     
                 } catch (localError) {
                     console.error('Local file error:', localError);
