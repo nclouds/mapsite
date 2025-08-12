@@ -538,7 +538,7 @@
         let dataSource = 'none'; // 'api', 'local', or 'none'
 
         // Apps Script Web App URL - UPDATE THIS with your current deployment URL!
-        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbz1AeAIii2BV_-TCqC4mYqru8qxWCALB9jCAWKSSVXQubP-VZokkQ2dFxnGi6ZKo7yzZw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbxNoeVM3t0WNZmp1KKJQxpeem7J3q_ATpvrozVicxnlIZ5pZvMaemc6bG_nFzlNHdaTFQ/exec';
         
         // Define all handler functions in global scope
         window.togglePhase = function(phaseId) {
@@ -640,7 +640,9 @@
                     // Create script element for JSONP
                     const script = document.createElement('script');
                     script.id = 'jsonp-script';
-                    const scriptUrl = APPS_SCRIPT_URL + '?callback=handleChecklistData&token=nclouds-map-2024';
+                    // ADD CACHE BUSTING - Use timestamp to force fresh data
+                    const timestamp = new Date().getTime();
+                    const scriptUrl = APPS_SCRIPT_URL + '?callback=handleChecklistData&token=nclouds-map-2024&t=' + timestamp;
                     console.log('JSONP URL:', scriptUrl); // Debug log
                     script.src = scriptUrl;
                     script.onerror = (error) => {
@@ -962,7 +964,7 @@
         }
         
         // Start loading when page loads
-        window.addEventListener('DOMContentLoaded', loadGuideData); 
+        window.addEventListener('DOMContentLoaded', loadGuideData);
     </script>
 </body>
 </html>
