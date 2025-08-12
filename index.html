@@ -575,8 +575,10 @@
             renderPhases();
         }
 
-        // JSONP callback function
+        // JSONP callback function - FIXED VERSION
         window.handleChecklistData = function(data) {
+            console.log('Received data:', data); // Debug log
+            
             // Remove script tag after execution
             const script = document.getElementById('jsonp-script');
             if (script) {
@@ -586,6 +588,12 @@
             // Check if it's an error response
             if (data.error) {
                 throw new Error(data.error);
+            }
+            
+            // Check if data has the expected structure
+            if (!data.phases || !Array.isArray(data.phases)) {
+                console.error('Invalid data structure:', data);
+                throw new Error('Invalid data structure: missing phases array');
             }
             
             // Success! Use the API data
@@ -621,8 +629,12 @@
                     const tempCallback = window.handleChecklistData;
                     window.handleChecklistData = function(data) {
                         clearTimeout(timeout);
-                        tempCallback(data);
-                        resolve();
+                        try {
+                            tempCallback(data);
+                            resolve();
+                        } catch (error) {
+                            reject(error);
+                        }
                     };
                     
                     // Create script element for JSONP
