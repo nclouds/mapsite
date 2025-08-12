@@ -813,15 +813,15 @@
                         </select>
                     ` : '<div></div>'}
                     
+                    <div class="button-group">
+                        <button class="button-small" onclick="expandAll()">Expand All</button>
+                        <button class="button-small" onclick="collapseAll()">Collapse All</button>
+                    </div>
+                    
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
                         <input type="text" class="search-input" placeholder="Search guide items..." 
                                id="search-input" oninput="handleSearchInput(event)">
-                    </div>
-                    
-                    <div class="button-group">
-                        <button class="button-small" onclick="expandAll()">Expand All</button>
-                        <button class="button-small" onclick="collapseAll()">Collapse All</button>
                     </div>
                 </div>
 
