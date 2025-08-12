@@ -538,7 +538,7 @@
         let dataSource = 'none'; // 'api', 'local', or 'none'
 
         // Apps Script Web App URL - UPDATE THIS with your current deployment URL!
-        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbz1AeAIii2BV_-TCqC4mYqru8qxWCALB9jCAWKSSVXQubP-VZokkQ2dFxnGi6ZKo7yzZw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbxNoeVM3t0WNZmp1KKJQxpeem7J3q_ATpvrozVicxnlIZ5pZvMaemc6bG_nFzlNHdaTFQ/exec';
         
         // Define all handler functions in global scope
         window.togglePhase = function(phaseId) {
@@ -610,64 +610,84 @@
         };
 
         // Load guide data with JSONP fallback
-    async function loadGuideData() {
-    // Update loading message
-    document.querySelector('.loading p').textContent = 'Loading secure guide data...';
-    
-    try {
-        // Try JSONP approach for cross-origin requests
-        console.log('Loading from secure API via JSONP...');
-        
-        // Create promise for JSONP
-        const jsonpPromise = new Promise((resolve, reject) => {
-            // Set timeout for JSONP request
-            const timeout = setTimeout(() => {
-                reject(new Error('JSONP request timeout'));
-            }, 10000); // 10 second timeout
+        async function loadGuideData() {
+            // Update loading message
+            document.querySelector('.loading p').textContent = 'Loading secure guide data...';
             
-            // Create temporary callback
-            const tempCallback = window.handleChecklistData;
-            window.handleChecklistData = function(data) {
-                clearTimeout(timeout);
-                try {
-                    tempCallback(data);
-                    resolve();
-                } catch (error) {
-                    reject(error);
-                }
-            };
-            
-            // Create script element for JSONP
-            const script = document.createElement('script');
-            script.id = 'jsonp-script';
-            
-            // ADD CACHE BUSTING - Use timestamp to force fresh data
-            const timestamp = new Date().getTime();
-            const scriptUrl = APPS_SCRIPT_URL + 
-                '?callback=handleChecklistData' + 
-                '&token=nclouds-map-2024' + 
-                '&t=' + timestamp; // Cache buster
+            try {
+                // Try JSONP approach for cross-origin requests
+                console.log('Loading from secure API via JSONP...');
                 
-            console.log('JSONP URL:', scriptUrl); // Debug log
-            script.src = scriptUrl;
-            script.onerror = (error) => {
-                clearTimeout(timeout);
-                console.error('Script load error:', error);
-                console.error('Failed URL:', scriptUrl);
-                reject(new Error('JSONP script failed to load'));
-            };
-            
-            // Add script to document
-            document.body.appendChild(script);
-        });
-        
-        // Wait for JSONP to complete
-        await jsonpPromise;
-        
-    } catch (apiError) {
-        // ... rest of your error handling
-    }
-}
+                // Create promise for JSONP
+                const jsonpPromise = new Promise((resolve, reject) => {
+                    // Set timeout for JSONP request
+                    const timeout = setTimeout(() => {
+                        reject(new Error('JSONP request timeout'));
+                    }, 10000); // 10 second timeout
+                    
+                    // Create temporary callback
+                    const tempCallback = window.handleChecklistData;
+                    window.handleChecklistData = function(data) {
+                        clearTimeout(timeout);
+                        try {
+                            tempCallback(data);
+                            resolve();
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    
+                    // Create script element for JSONP
+                    const script = document.createElement('script');
+                    script.id = 'jsonp-script';
+                    const scriptUrl = APPS_SCRIPT_URL + '?callback=handleChecklistData&token=nclouds-map-2024';
+                    console.log('JSONP URL:', scriptUrl); // Debug log
+                    script.src = scriptUrl;
+                    script.onerror = (error) => {
+                        clearTimeout(timeout);
+                        console.error('Script load error:', error); // More detailed error
+                        console.error('Failed URL:', scriptUrl);
+                        reject(new Error('JSONP script failed to load'));
+                    };
+                    
+                    // Add script to document
+                    document.body.appendChild(script);
+                });
+                
+                // Wait for JSONP to complete
+                await jsonpPromise;
+                
+            } catch (apiError) {
+                console.error('API Error:', apiError);
+                
+                // Try fallback to local JSON
+                console.log('Falling back to local JSON file...');
+                document.querySelector('.loading p').textContent = 'Loading from local file...';
+                
+                try {
+                    const localResponse = await fetch('checklist-data.json');
+                    if (!localResponse.ok) {
+                        throw new Error(`Failed to load local file: ${localResponse.status}`);
+                    }
+                    
+                    guideData = await localResponse.json();
+                    dataSource = 'local';
+                    
+                    // Initialize all phases as collapsed
+                    guideData.phases.forEach(phase => {
+                        expandedPhases[phase.id] = false;
+                    });
+                    
+                    // Initialize the app
+                    initializeApp();
+                    
+                } catch (localError) {
+                    console.error('Local file error:', localError);
+                    showLoadingError(apiError, localError);
+                    return;
+                }
+            }
+        }
 
         // Show loading error
         function showLoadingError(apiError, localError) {
