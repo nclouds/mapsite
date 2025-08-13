@@ -895,14 +895,6 @@
                     </div>
                 </div>
 
-                <!-- Security Status -->
-                ${dataSource !== 'none' ? `
-                    <div id="security-status" class="security-status ${dataSource === 'api' ? 'secure' : 'fallback'}">
-                        <span class="security-icon">${dataSource === 'api' ? '🔒' : '⚠️'}</span>
-                        <span>${dataSource === 'api' ? 'Connected securely via nclouds.com API' : 'Using local data file - API connection failed'}</span>
-                    </div>
-                ` : ''}
-
                 <!-- Controls -->
                 <div class="controls">
                     <select class="project-selector" id="project-type" onchange="handleProjectTypeChange(event)">
@@ -932,21 +924,6 @@
                                id="search-input" oninput="handleSearchInput(event)">
                     </div>
                 </div>
-
-                <!-- Resources -->
-                ${guideData.resources && guideData.resources.length > 0 ? `
-                    <div class="resources">
-                        <h2>📚 Important Resources</h2>
-                        <div class="resource-links">
-                            ${guideData.resources.map(resource => `
-                                <a href="${resource.url}" target="_blank" class="resource-link">
-                                    <span>🔗</span>
-                                    <span>${resource.title}</span>
-                                </a>
-                            `).join('')}
-                        </div>
-                    </div>
-                ` : ''}
 
                 <!-- Phases -->
                 <div id="phases-container"></div>
