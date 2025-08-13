@@ -811,7 +811,8 @@
             
             // Check if any items in the section match the project type
             return section.items.some(item => {
-                const itemApplicability = item.applicability || ['map', 'map-lite'];
+                // If item has no applicability defined, treat it as applicable to all
+                const itemApplicability = item.applicability || ['map', 'map-lite', 'ola'];
                 return itemApplicability.includes(projectType);
             });
         }
@@ -820,7 +821,8 @@
         function shouldShowItem(item) {
             // Project type filter
             if (projectType !== 'both') {
-                const itemApplicability = item.applicability || ['map', 'map-lite'];
+                // If item has no applicability defined, treat it as applicable to all
+                const itemApplicability = item.applicability || ['map', 'map-lite', 'ola'];
                 if (!itemApplicability.includes(projectType)) {
                     return false;
                 }
@@ -1012,8 +1014,8 @@
         
         // Render individual item
         function renderItem(item, section) {
-            // Use the item's own applicability
-            const applicability = item.applicability || ['map', 'map-lite'];
+            // Use the item's own applicability, or show all icons if not specified
+            const applicability = item.applicability || ['map', 'map-lite', 'ola'];
             
             return `
                 <div class="guide-item">
