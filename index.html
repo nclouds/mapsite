@@ -235,6 +235,70 @@
             text-decoration: none;
         }
         
+        /* Legend Box */
+        .legend-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .legend-title {
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0 0 12px 0;
+            color: #333;
+        }
+        
+        .legend-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .legend-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .legend-section-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .legend-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+        }
+        
+        .legend-icon.map {
+            color: #1E40AF;
+        }
+        
+        .legend-icon.map-lite {
+            color: #60A5FA;
+        }
+        
+        .legend-icon.ola {
+            color: #10B981;
+        }
+        
         /* Phases */
         .phase {
             background: white;
@@ -904,6 +968,68 @@
                         <span class="search-icon">🔍</span>
                         <input type="text" class="search-input" placeholder="Search guide items..." 
                                id="search-input" oninput="handleSearchInput(event)">
+                    </div>
+                </div>
+
+                <!-- Legend Box -->
+                <div class="legend-box">
+                    <h3 class="legend-title">Legend</h3>
+                    <div class="legend-content">
+                        <div class="legend-section">
+                            <div class="legend-section-title">Project Types</div>
+                            <div class="legend-item">
+                                <span class="legend-icon map">◆</span>
+                                <span>MAP</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon map-lite">◇</span>
+                                <span>MAP Lite</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon ola">○</span>
+                                <span>OLA</span>
+                            </div>
+                        </div>
+                        
+                        <div class="legend-section">
+                            <div class="legend-section-title">Responsible Parties</div>
+                            <div class="legend-item">
+                                <span class="legend-icon">AE</span>
+                                <span>Account Executive</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon">MT</span>
+                                <span>Migration Team</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon">PM</span>
+                                <span>Project Manager</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon">SA</span>
+                                <span>Solutions Architect</span>
+                            </div>
+                        </div>
+                        
+                        <div class="legend-section">
+                            <div class="legend-section-title">Partners</div>
+                            <div class="legend-item">
+                                <span class="legend-icon">OLA Partner</span>
+                                <span>Evolve, Cloudamize, Optimus</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon">Relutech</span>
+                                <span>Buyback, Licensing Partner</span>
+                            </div>
+                        </div>
+                        
+                        <div class="legend-section">
+                            <div class="legend-section-title">Requirements</div>
+                            <div class="legend-item">
+                                <span class="required-badge">Required</span>
+                                <span>Required by AWS</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
