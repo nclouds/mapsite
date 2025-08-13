@@ -779,6 +779,24 @@
 
         // Initialize the application
         function initializeApp() {
+            // Debug: Log the data structure
+            console.log('Guide data loaded:', guideData);
+            
+            // Debug: Check a few items for applicability
+            if (guideData.phases && guideData.phases.length > 0) {
+                console.log('First phase:', guideData.phases[0]);
+                if (guideData.phases[0].sections && guideData.phases[0].sections.length > 0) {
+                    console.log('First section:', guideData.phases[0].sections[0]);
+                    if (guideData.phases[0].sections[0].items && guideData.phases[0].sections[0].items.length > 0) {
+                        console.log('First few items:');
+                        guideData.phases[0].sections[0].items.slice(0, 3).forEach((item, i) => {
+                            console.log(`Item ${i}:`, item);
+                            console.log(`  - applicability:`, item.applicability);
+                        });
+                    }
+                }
+            }
+            
             // Extract all unique responsible parties
             extractResponsibleParties();
             renderApp();
@@ -1023,6 +1041,11 @@
             // Only show badges for explicitly set applicability
             const applicability = item.applicability || [];
             
+            // Debug: Log items with their applicability
+            if (item.id.endsWith('-1') || item.id.endsWith('-2')) {
+                console.log(`Item ${item.id} applicability:`, applicability, 'raw:', item.applicability);
+            }
+            
             return `
                 <div class="guide-item">
                     <div class="item-header">
@@ -1041,6 +1064,8 @@
                                         <span class="tooltip-text">${item.tooltip}</span>
                                     </span>
                                 ` : ''}
+                                <!-- Debug: Show raw applicability -->
+                                <span style="font-size: 10px; color: #999; margin-left: 10px;">[${item.applicability ? item.applicability.join(', ') : 'none'}]</span>
                             </p>
                             ${item.links && item.links.length > 0 ? `
                                 <div class="item-links">
