@@ -556,7 +556,7 @@
         let dataSource = 'none'; // 'api', 'local', or 'none'
 
         // Apps Script Web App URL - UPDATE THIS with your current deployment URL!
-        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbwWs0I-1NfjcxX4DQUUuAaIrISfpe681_qdzJSIDRCEC5gurhlMZhzUIeYVTC4io4Pdsg/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/a/macros/nclouds.com/s/AKfycbxNoeVM3t0WNZmp1KKJQxpeem7J3q_ATpvrozVicxnlIZ5pZvMaemc6bG_nFzlNHdaTFQ/exec';
         
         // Define all handler functions in global scope
         window.togglePhase = function(phaseId) {
@@ -763,11 +763,24 @@
         // Check if section should be shown based on project type
         function shouldShowSection(section) {
             if (projectType === 'both') return true;
-            return section.applicability.includes(projectType);
+            
+            // Check if any items in the section match the project type
+            return section.items.some(item => {
+                const itemApplicability = item.applicability || ['map', 'map-lite'];
+                return itemApplicability.includes(projectType);
+            });
         }
         
         // Check if item should be shown based on filters
         function shouldShowItem(item) {
+            // Project type filter
+            if (projectType !== 'both') {
+                const itemApplicability = item.applicability || ['map', 'map-lite'];
+                if (!itemApplicability.includes(projectType)) {
+                    return false;
+                }
+            }
+            
             // Search filter
             if (searchTerm) {
                 const searchLower = searchTerm.toLowerCase();
@@ -955,7 +968,8 @@
         
         // Render individual item
         function renderItem(item, section) {
-            const applicability = section ? section.applicability : ['map', 'map-lite'];
+            // Use the item's own applicability
+            const applicability = item.applicability || ['map', 'map-lite'];
             
             return `
                 <div class="guide-item">

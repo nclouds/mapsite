@@ -1,94 +1,281 @@
-/**
- * Google Apps Script to export MAP Checklist from Sheets to JSON
- * This version includes token protection for cross-origin access
- * 
- * Instructions:
- * 1. Replace your existing code with this script
- * 2. Save the project
- * 3. Deploy > New deployment > Web app
- * 4. Execute as: "Me" (your email)
- * 5. Who has access: "Anyone"
- */
+// Configuration - UPDATE THESE VALUES
+const SPREADSHEET_ID = '1igp2UOuz1GEIXqmGMOhKfIYyTEPYGNGeDyaQjKx6kFM'; // Replace with your spreadsheet ID
+const SHEET_NAME = 'Checklist'; // Name of the sheet containing checklist data
+const METADATA_SHEET_NAME = 'Metadata'; // Name of the sheet containing metadata
+const RESOURCES_SHEET_NAME = 'Resources'; // Name of the sheet containing resources
+const SECURITY_TOKEN = 'nclouds-map-2024'; // Security token for API access
 
-const SHEET_ID = '1igp2UOuz1GEIXqmGMOhKfIYyTEPYGNGeDyaQjKx6kFM'; // Your sheet ID
+function debugSheets() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  console.log('=== CHECKING SHEETS ===');
+  const sheets = ss.getSheets();
+  sheets.forEach(sheet => {
+    console.log(`Sheet name: "${sheet.getName()}"`);
+  });
+  
+  console.log('\n=== METADATA SHEET ===');
+  const metadataSheet = ss.getSheetByName(METADATA_SHEET_NAME);
+  if (metadataSheet) {
+    console.log('Found! Data:');
+    const data = metadataSheet.getDataRange().getValues();
+    data.forEach((row, i) => console.log(`Row ${i}:`, row));
+  } else {
+    console.log('NOT FOUND - Looking for:', METADATA_SHEET_NAME);
+  }
+  
+  console.log('\n=== RESOURCES SHEET ===');
+  const resourcesSheet = ss.getSheetByName(RESOURCES_SHEET_NAME);
+  if (resourcesSheet) {
+    console.log('Found! Data:');
+    const data = resourcesSheet.getDataRange().getValues();
+    data.forEach((row, i) => console.log(`Row ${i}:`, row));
+  } else {
+    console.log('NOT FOUND - Looking for:', RESOURCES_SHEET_NAME);
+  }
+}
 
-// Add this function to your Apps Script to create a proxy endpoint
-
-function doPost(e) {
-  try {
-    // This endpoint will accept POST requests and return JSON with CORS headers
-    const ACCESS_TOKEN = 'nclouds-map-2024';
-    
-    // Parse the POST data
-    const postData = JSON.parse(e.postData.contents);
-    
-    // Check for token
-    if (postData.token !== ACCESS_TOKEN) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ error: 'Invalid token' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    // Generate and return the data
-    const checklistData = generateJSON();
-    
-    return ContentService
-      .createTextOutput(JSON.stringify(checklistData))
-      .setMimeType(ContentService.MimeType.JSON);
-      
-  } catch (error) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ error: error.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+function testDirectSheetRead() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
+  // Test metadata
+  console.log('=== METADATA TEST ===');
+  const metadataSheet = ss.getSheetByName('Metadata'); // Use exact name
+  if (metadataSheet) {
+    const data = metadataSheet.getDataRange().getValues();
+    console.log('Raw metadata data:');
+    data.forEach((row, i) => console.log(`Row ${i}:`, row));
+  } else {
+    console.log('No Metadata sheet found');
+  }
+  
+  // Test resources  
+  console.log('\n=== RESOURCES TEST ===');
+  const resourcesSheet = ss.getSheetByName('Resources'); // Use exact name
+  if (resourcesSheet) {
+    const data = resourcesSheet.getDataRange().getValues();
+    console.log('Raw resources data:');
+    data.forEach((row, i) => console.log(`Row ${i}:`, row));
+  } else {
+    console.log('No Resources sheet found');
   }
 }
 
 /**
- * Google Apps Script with JSONP support for cross-origin requests
- * This works with GitHub Pages and other external sites
+ * Debug function to test if metadata and resources sheets are being read
+ * Run this in the Apps Script editor to see what's happening
  */
-function doGet(e) {
+function debugMetadataAndResources() {
   try {
-    // Simple token protection
-    const ACCESS_TOKEN = 'nclouds-map-2024'; // Change this to something secure
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
     
-    // Check for token
-    if (e.parameter.token !== ACCESS_TOKEN) {
-      const errorResponse = { error: 'Invalid or missing access token' };
+    // List all sheets
+    console.log('Available sheets in spreadsheet:');
+    const allSheets = ss.getSheets();
+    allSheets.forEach(sheet => {
+      console.log(`- "${sheet.getName()}"`);
+    });
+    
+    // Test Metadata
+    console.log('\n--- TESTING METADATA SHEET ---');
+    const metadataSheet = ss.getSheetByName(METADATA_SHEET_NAME);
+    if (metadataSheet) {
+      console.log(`Found metadata sheet: "${METADATA_SHEET_NAME}"`);
+      const metadataData = metadataSheet.getDataRange().getValues();
+      console.log('Metadata data:');
+      metadataData.forEach((row, index) => {
+        console.log(`Row ${index}: [${row.join(', ')}]`);
+      });
       
-      if (e.parameter.callback) {
-        return ContentService
-          .createTextOutput(e.parameter.callback + '(' + JSON.stringify(errorResponse) + ')')
-          .setMimeType(ContentService.MimeType.JAVASCRIPT);
-      } else {
-        return ContentService
-          .createTextOutput(JSON.stringify(errorResponse))
-          .setMimeType(ContentService.MimeType.JSON);
-      }
+      const metadata = getMetadata(ss);
+      console.log('Processed metadata:', JSON.stringify(metadata, null, 2));
+    } else {
+      console.log(`Metadata sheet "${METADATA_SHEET_NAME}" NOT FOUND`);
     }
     
-    // Token is valid, proceed with data generation
+    // Test Resources
+    console.log('\n--- TESTING RESOURCES SHEET ---');
+    const resourcesSheet = ss.getSheetByName(RESOURCES_SHEET_NAME);
+    if (resourcesSheet) {
+      console.log(`Found resources sheet: "${RESOURCES_SHEET_NAME}"`);
+      const resourcesData = resourcesSheet.getDataRange().getValues();
+      console.log('Resources data:');
+      resourcesData.forEach((row, index) => {
+        console.log(`Row ${index}: [${row.join(', ')}]`);
+      });
+      
+      const resources = getResources(ss);
+      console.log('Processed resources:', JSON.stringify(resources, null, 2));
+    } else {
+      console.log(`Resources sheet "${RESOURCES_SHEET_NAME}" NOT FOUND`);
+    }
+    
+  } catch (error) {
+    console.error('Debug error:', error);
+  }
+}
+
+/**
+ * Test the complete doGet response
+ */
+function testCompleteResponse() {
+  try {
+    // Simulate the doGet request
+    const e = {
+      parameter: {
+        token: SECURITY_TOKEN,
+        callback: 'testCallback'
+      }
+    };
+    
+    const response = doGet(e);
+    const content = response.getContent();
+    
+    // Remove the callback wrapper to see the JSON
+    const jsonStart = content.indexOf('(') + 1;
+    const jsonEnd = content.lastIndexOf(')');
+    const jsonData = content.substring(jsonStart, jsonEnd);
+    
+    const data = JSON.parse(jsonData);
+    
+    console.log('Complete response structure:');
+    console.log('- Number of phases:', data.phases ? data.phases.length : 0);
+    console.log('- Metadata:', JSON.stringify(data.metadata, null, 2));
+    console.log('- Resources:', JSON.stringify(data.resources, null, 2));
+    
+    return data;
+    
+  } catch (error) {
+    console.error('Test complete response error:', error);
+  }
+}
+
+/**
+ * MAP Migration Checklist - Google Apps Script
+ * Auto-calculates phase_id, phase_title, and item_id from spreadsheet data
+ * Reads metadata and resources from separate sheets
+ * 
+ * This script serves checklist data from a Google Sheet via a web app endpoint
+ * with JSONP support for cross-origin requests from Google Sites
+ */
+
+
+
+/**
+ * Web app entry point - serves checklist data as JSON or JSONP
+ */
+function doGet(e) {
+  // Version 3.1 - Force redeployment - ${new Date().toISOString()}
+  // Simple test that always works
+  console.log('Version 4');
+  if (!e.parameter.token) {
+    return ContentService
+      .createTextOutput('Test response - no token needed')
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+  
+  // Add version check for debugging - NO TOKEN REQUIRED
+  if (e.parameter.version === 'check') {
+    return ContentService
+      .createTextOutput('Version 3.0 - Reading from Metadata and Resources sheets')
+      .setMimeType(ContentService.MimeType.TEXT);
+  }
+  
+  // Debug endpoint - NO TOKEN REQUIRED
+  if (e.parameter.debug === 'true') {
+    const debugInfo = {
+      scriptVersion: '3.0',
+      timestamp: new Date().toISOString(),
+      securityTokenConfigured: typeof SECURITY_TOKEN !== 'undefined',
+      spreadsheetIdConfigured: typeof SPREADSHEET_ID !== 'undefined',
+      metadataSheetName: METADATA_SHEET_NAME,
+      resourcesSheetName: RESOURCES_SHEET_NAME,
+      receivedParameters: Object.keys(e.parameter || {})
+    };
+    
+    return ContentService
+      .createTextOutput(JSON.stringify(debugInfo, null, 2))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+  
+  try {
+    // Security check - verify token
+    const token = e.parameter.token;
+    if (token !== SECURITY_TOKEN) {
+      const errorResponse = { 
+        error: 'Unauthorized access',
+        debug: {
+          receivedToken: token ? 'Token provided but incorrect' : 'No token provided',
+          expectedToken: 'nclouds-map-2024'
+        }
+      };
+      return ContentService
+        .createTextOutput(JSON.stringify(errorResponse))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    // Get the spreadsheet
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    
+    // Get the main checklist sheet
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      throw new Error('Checklist sheet not found');
+    }
+    
+    // Get the phases using the auto-calculate function
+    const phases = getPhases(sheet);
+    
+    // Get metadata - ADD LOGGING
+    console.log('Getting metadata...');
+    const metadata = getMetadata(ss);
+    console.log('Metadata result:', JSON.stringify(metadata));
+    
+    // Get resources - ADD LOGGING
+    console.log('Getting resources...');
+    const resources = getResources(ss);
+    console.log('Resources result:', JSON.stringify(resources));
+    
+    // Build response
+    const response = {
+      phases: phases,
+      metadata: metadata,
+      resources: resources,
+      debug: {
+        scriptVersion: '3.0',
+        timestamp: new Date().toISOString(),
+        metadataSheetName: METADATA_SHEET_NAME,
+        resourcesSheetName: RESOURCES_SHEET_NAME
+      }
+    };
+    
+    // Check if JSONP callback is requested
     const callback = e.parameter.callback;
-    const checklistData = generateJSON();
     
     if (callback) {
-      // JSONP response
+      // Return JSONP response
       return ContentService
-        .createTextOutput(callback + '(' + JSON.stringify(checklistData) + ')')
+        .createTextOutput(callback + '(' + JSON.stringify(response) + ')')
         .setMimeType(ContentService.MimeType.JAVASCRIPT);
     } else {
-      // Regular JSON
+      // Return regular JSON
       return ContentService
-        .createTextOutput(JSON.stringify(checklistData))
+        .createTextOutput(JSON.stringify(response))
         .setMimeType(ContentService.MimeType.JSON);
     }
     
   } catch (error) {
-    const errorResponse = { error: error.toString() };
+    console.error('Error in doGet:', error);
     
-    if (e.parameter.callback) {
+    const errorResponse = {
+      error: error.toString(),
+      message: 'Failed to load checklist data'
+    };
+    
+    const callback = e.parameter.callback;
+    if (callback) {
       return ContentService
-        .createTextOutput(e.parameter.callback + '(' + JSON.stringify(errorResponse) + ')')
+        .createTextOutput(callback + '(' + JSON.stringify(errorResponse) + ')')
         .setMimeType(ContentService.MimeType.JAVASCRIPT);
     } else {
       return ContentService
@@ -98,314 +285,126 @@ function doGet(e) {
   }
 }
 
-// ===== MENU AND UI FUNCTIONS =====
-
-function onOpen() {
-  const ui = SpreadsheetApp.getUi();
-  ui.createMenu('MAP Checklist')
-    .addItem('Export to JSON', 'exportToJSON')
-    .addItem('Download JSON', 'downloadJSON')
-    .addItem('Validate Sheet Structure', 'validateSheets')
-    .addSeparator()
-    .addItem('Test Web App Access', 'testWebAppAccess')
-    .addToUi();
-}
-
 /**
- * Test the Web App deployment
+ * Get metadata from the Metadata sheet
+ * Expected format: Two columns - Key and Value
  */
-function testWebAppAccess() {
-  const ui = SpreadsheetApp.getUi();
-  const userEmail = Session.getActiveUser().getEmail();
-  
-  const message = `Current user: ${userEmail}\n\n` +
-    `This deployment uses token-based authentication.\n\n` +
-    `To test the API:\n` +
-    `1. Deploy as Web App (Deploy > New deployment)\n` +
-    `2. Execute as: "Me" (your email)\n` +
-    `3. Who has access: "Anyone"\n` +
-    `4. Test URL: {deployment_url}?token=nclouds-map-2024\n` +
-    `5. For JSONP: {deployment_url}?token=nclouds-map-2024&callback=handleData`;
-  
-  ui.alert('Web App Access Test', message, ui.ButtonSet.OK);
-}
-
-function exportToJSON() {
+function getMetadata(spreadsheet) {
   try {
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    
-    // Get metadata
-    const metadataSheet = ss.getSheetByName('Metadata');
-    const metadata = getMetadata(metadataSheet);
-    
-    // Get resources
-    const resourcesSheet = ss.getSheetByName('Resources');
-    const resources = getResources(resourcesSheet);
-    
-    // Get checklist items
-    const checklistSheet = ss.getSheetByName('Checklist');
-    const phases = getPhases(checklistSheet);
-    
-    // Construct final JSON
-    const jsonData = {
-      metadata: metadata,
-      resources: resources,
-      phases: phases
-    };
-    
-    // Save to Drive
-    const jsonString = JSON.stringify(jsonData, null, 2);
-    const blob = Utilities.newBlob(jsonString, 'application/json', 'checklist-data.json');
-    const file = DriveApp.createFile(blob);
-    
-    // Show success message with link
-    const ui = SpreadsheetApp.getUi();
-    const result = ui.alert(
-      'Export Successful!',
-      `JSON file created: ${file.getName()}\n\nFile URL: ${file.getUrl()}\n\nWould you like to open it?`,
-      ui.ButtonSet.YES_NO
-    );
-    
-    if (result == ui.Button.YES) {
-      const html = `<script>window.open('${file.getUrl()}', '_blank');google.script.host.close();</script>`;
-      ui.showModelessDialog(HtmlService.createHtmlOutput(html), 'Opening file...');
+    const metadataSheet = spreadsheet.getSheetByName(METADATA_SHEET_NAME);
+    if (!metadataSheet) {
+      console.log('Metadata sheet not found, using defaults');
+      return {
+        version: '1.0',
+        lastUpdated: new Date().toISOString()
+      };
     }
     
-  } catch (error) {
-    SpreadsheetApp.getUi().alert('Error: ' + error.toString());
-  }
-}
-
-function downloadJSON() {
-  try {
-    const jsonData = generateJSON();
-    const jsonString = JSON.stringify(jsonData, null, 2);
+    const data = metadataSheet.getDataRange().getValues();
+    const metadata = {};
     
-    // Create download dialog
-    const html = HtmlService.createHtmlOutput(`
-      <div style="font-family: Arial, sans-serif; padding: 20px;">
-        <h3>Download JSON File</h3>
-        <p>Click the button below to download your checklist data:</p>
-        <button onclick="downloadFile()" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
-          Download checklist-data.json
-        </button>
-        <div id="json-preview" style="margin-top: 20px; max-height: 300px; overflow-y: auto; background: #f5f5f5; padding: 10px; border-radius: 4px; display: none;">
-          <h4>Preview:</h4>
-          <pre style="font-size: 12px; white-space: pre-wrap;">${jsonString.substring(0, 1000)}...</pre>
-        </div>
-        <p style="margin-top: 20px; color: #666; font-size: 14px;">
-          After downloading, place this file in the same directory as your index.html file.
-        </p>
-      </div>
-      <script>
-        function downloadFile() {
-          const jsonData = ${jsonString};
-          const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'checklist-data.json';
-          a.click();
-          URL.revokeObjectURL(url);
-          document.getElementById('json-preview').style.display = 'block';
-        }
-      </script>
-    `)
-    .setWidth(600)
-    .setHeight(500);
-    
-    SpreadsheetApp.getUi().showModalDialog(html, 'Download JSON');
-    
-  } catch (error) {
-    SpreadsheetApp.getUi().alert('Error: ' + error.toString());
-  }
-}
-
-// ===== DATA PROCESSING FUNCTIONS =====
-
-function generateJSON() {
-  // Use openById instead of getActiveSpreadsheet
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  
-  // Get metadata
-  const metadataSheet = ss.getSheetByName('Metadata');
-  const metadata = getMetadata(metadataSheet);
-  
-  // Update lastUpdated field with current date and time
-  updateLastUpdated(metadataSheet);
-  
-  // Get resources
-  const resourcesSheet = ss.getSheetByName('Resources');
-  const resources = getResources(resourcesSheet);
-  
-  // Get checklist items
-  const checklistSheet = ss.getSheetByName('Checklist');
-  const phases = getPhases(checklistSheet);
-  
-  return {
-    metadata: metadata,
-    resources: resources,
-    phases: phases
-  };
-}
-
-/**
- * Update the lastUpdated field in the Metadata sheet
- */
-function updateLastUpdated(metadataSheet) {
-  if (!metadataSheet) return;
-  
-  const data = metadataSheet.getDataRange().getValues();
-  const currentDateTime = new Date().toISOString();
-  
-  // Find the lastUpdated row
-  for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === 'lastUpdated' || data[i][0] === 'LastUpdated') {
-      // Update the value in column B
-      metadataSheet.getRange(i + 1, 2).setValue(currentDateTime);
-      return;
-    }
-  }
-  
-  // If lastUpdated doesn't exist, add it
-  const lastRow = metadataSheet.getLastRow();
-  metadataSheet.getRange(lastRow + 1, 1).setValue('lastUpdated');
-  metadataSheet.getRange(lastRow + 1, 2).setValue(currentDateTime);
-}
-
-/**
- * Helper function to get column index by header name (case-insensitive)
- */
-function getColumnIndex(headers, columnName) {
-  // Try exact match first
-  let index = headers.indexOf(columnName);
-  
-  // If not found, try case-insensitive match
-  if (index === -1) {
-    const lowerColumnName = columnName.toLowerCase();
-    index = headers.findIndex(h => h.toString().toLowerCase() === lowerColumnName);
-  }
-  
-  // If still not found, try partial match
-  if (index === -1) {
-    const lowerColumnName = columnName.toLowerCase();
-    index = headers.findIndex(h => h.toString().toLowerCase().includes(lowerColumnName));
-  }
-  
-  if (index === -1) {
-    throw new Error(`Column "${columnName}" not found in headers. Available headers: ${headers.join(', ')}`);
-  }
-  return index;
-}
-
-/**
- * Get metadata using column headers
- */
-function getMetadata(sheet) {
-  if (!sheet) {
-    throw new Error('Metadata sheet not found');
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const metadata = {};
-  
-  // Find column indices
-  let fieldCol, valueCol;
-  try {
-    fieldCol = getColumnIndex(headers, 'Field');
-    valueCol = getColumnIndex(headers, 'Value');
-  } catch (e) {
-    // If headers not found, assume first two columns
-    fieldCol = 0;
-    valueCol = 1;
-  }
-  
-  for (let i = 1; i < data.length; i++) {
-    const field = data[i][fieldCol];
-    const value = data[i][valueCol];
-    if (field && value) {
-      metadata[field] = value;
-    }
-  }
-  
-  // Ensure we have the updated lastUpdated value
-  if (metadata.lastUpdated === undefined) {
-    metadata.lastUpdated = new Date().toISOString();
-  }
-  
-  return metadata;
-}
-
-/**
- * Get resources using column headers (case-insensitive and flexible order)
- */
-function getResources(sheet) {
-  if (!sheet) {
-    throw new Error('Resources sheet not found');
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  if (data.length === 0) {
-    return [];
-  }
-  
-  const headers = data[0];
-  const resources = [];
-  
-  try {
-    // Find column indices - case insensitive
-    let titleCol = -1;
-    let urlCol = -1;
-    let descriptionCol = -1;
-    
-    // Search for columns by various possible names
-    headers.forEach((header, index) => {
-      const h = header.toString().toLowerCase().trim();
-      if (h === 'title' || h === 'name' || h === 'resource') {
-        titleCol = index;
-      } else if (h === 'url' || h === 'link' || h === 'address') {
-        urlCol = index;
-      } else if (h === 'description' || h === 'desc' || h === 'details') {
-        descriptionCol = index;
-      }
-    });
-    
-    // Verify we found all required columns
-    if (titleCol === -1) {
-      throw new Error('Could not find Title column');
-    }
-    if (urlCol === -1) {
-      throw new Error('Could not find URL column');
-    }
-    if (descriptionCol === -1) {
-      throw new Error('Could not find Description column');
-    }
-    
-    // Process data rows
+    // Skip header row, process key-value pairs
     for (let i = 1; i < data.length; i++) {
-      const title = data[i][titleCol];
-      const url = data[i][urlCol];
-      const description = data[i][descriptionCol];
+      const key = String(data[i][0] || '').trim();
+      const value = String(data[i][1] || '').trim();
       
-      if (title) {
+      if (key) {
+        // Special handling for certain keys
+        if (key === 'lastUpdated' && value) {
+          // Try to parse as date
+          try {
+            metadata[key] = new Date(value).toISOString();
+          } catch (e) {
+            metadata[key] = value;
+          }
+        } else {
+          metadata[key] = value;
+        }
+      }
+    }
+    
+    // Add calculated metadata
+    const checklistSheet = spreadsheet.getSheetByName(SHEET_NAME);
+    if (checklistSheet) {
+      const phases = getPhases(checklistSheet);
+      metadata.totalPhases = phases.length;
+      metadata.totalItems = phases.reduce((total, phase) => 
+        total + phase.sections.reduce((sectionTotal, section) => 
+          sectionTotal + section.items.length, 0), 0);
+    }
+    
+    // Ensure we have at least version and lastUpdated
+    if (!metadata.version) metadata.version = '1.0';
+    if (!metadata.lastUpdated) metadata.lastUpdated = new Date().toISOString();
+    
+    return metadata;
+    
+  } catch (error) {
+    console.error('Error reading metadata:', error);
+    return {
+      version: '1.0',
+      lastUpdated: new Date().toISOString()
+    };
+  }
+}
+
+/**
+ * Get resources from the Resources sheet
+ * Expected format: Two columns - Title and URL
+ */
+function getResources(spreadsheet) {
+  try {
+    const resourcesSheet = spreadsheet.getSheetByName(RESOURCES_SHEET_NAME);
+    if (!resourcesSheet) {
+      console.log('Resources sheet not found, using defaults');
+      return [
+        {
+          title: 'AWS Migration Best Practices',
+          url: 'https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-guide/welcome.html'
+        },
+        {
+          title: 'MAP Program Overview',
+          url: 'https://aws.amazon.com/migration-acceleration-program/'
+        },
+        {
+          title: 'nClouds MAP Resources',
+          url: 'https://www.nclouds.com/aws-map/'
+        }
+      ];
+    }
+    
+    const data = resourcesSheet.getDataRange().getValues();
+    const resources = [];
+    
+    // Skip header row, process resources
+    for (let i = 1; i < data.length; i++) {
+      const title = String(data[i][0] || '').trim();
+      const url = String(data[i][1] || '').trim();
+      
+      if (title && url) {
         resources.push({
-          title: String(title),
-          url: String(url || '#'),
-          description: String(description || '')
+          title: title,
+          url: url
         });
       }
     }
-  } catch (e) {
-    // If headers don't match, show what's available
-    throw new Error(`Resources sheet error: ${e.message}\nExpected headers: Title, URL, Description (any order, any case)\nFound headers: ${headers.join(', ')}`);
+    
+    return resources.length > 0 ? resources : [
+      {
+        title: 'AWS Migration Best Practices',
+        url: 'https://docs.aws.amazon.com/prescriptive-guidance/latest/migration-guide/welcome.html'
+      }
+    ];
+    
+  } catch (error) {
+    console.error('Error reading resources:', error);
+    return [];
   }
-  
-  return resources;
 }
 
 /**
- * Get phases using column headers
+ * Get phases using column headers with AUTO-CALCULATED values
+ * Updated to read Phase column if it exists
  */
 function getPhases(sheet) {
   if (!sheet) {
@@ -419,13 +418,16 @@ function getPhases(sheet) {
   
   // Find column indices by header name
   const colIndex = {};
+  
+  // Required columns
   const requiredColumns = [
-    'phase_id', 'phase_title', 'section_title', 'applicability', 
-    'item_id', 'item_text', 'tooltip', 'required', 'link_text', 'link_url'
+    'ID', 'section_title', 'applicability', 
+    'item_text', 'tooltip', 'required', 'link_text', 'link_url'
   ];
   
-  // Optional columns
+  // Optional columns (added 'Phase')
   const optionalColumns = [
+    'Phase',  // NEW: Optional Phase column
     'responsible',
     'link_text_2', 'link_url_2',
     'link_text_3', 'link_url_3', 
@@ -449,42 +451,59 @@ function getPhases(sheet) {
     throw new Error(`Missing required columns: ${missingColumns.join(', ')}`);
   }
   
+  // Track current ID and item counter
+  let currentID = '';
+  let itemCounter = 0;
+  let currentPhaseTitle = ''; // Track the phase title for each ID
+  
   // Process data rows
   for (let i = 1; i < data.length; i++) {
     const row = data[i];
     
     // Read values using column headers
-    const phaseId = String(row[colIndex.phase_id] || '');
-    const phaseTitle = String(row[colIndex.phase_title] || '');
+    const id = String(row[colIndex.ID] || '');
     const sectionTitle = String(row[colIndex.section_title] || '');
     const applicability = String(row[colIndex.applicability] || '');
-    const itemId = String(row[colIndex.item_id] || '');
     const itemText = String(row[colIndex.item_text] || '');
     const tooltip = String(row[colIndex.tooltip] || '');
     const required = row[colIndex.required];
     const responsible = colIndex.responsible !== undefined ? String(row[colIndex.responsible] || '') : '';
     
-    // Skip rows without phase_id or item_id
-    if (!phaseId || !itemId) continue;
+    // NEW: Read Phase column if it exists
+    const phaseColumn = colIndex.Phase !== undefined ? String(row[colIndex.Phase] || '') : '';
     
-    // Clean up the itemId if it looks like a date/timestamp
-    let cleanItemId = itemId;
-    if (itemId.includes('T') && itemId.includes('Z')) {
-      // This looks like a timestamp, generate a clean ID
-      if (!phaseMap[phaseId]) {
-        phaseMap[phaseId] = { itemCount: 0 };
+    // Skip empty rows
+    if (!id || !sectionTitle || !itemText) continue;
+    
+    // Check if this is a new ID (new phase)
+    if (id !== currentID) {
+      currentID = id;
+      itemCounter = 0; // Reset item counter for new phase
+      
+      // Set the phase title for this ID
+      if (phaseColumn) {
+        // If Phase column exists and has a value, use it
+        currentPhaseTitle = phaseColumn;
+      } else {
+        // Otherwise, derive from section title
+        currentPhaseTitle = getPhaseNameFromSection(sectionTitle);
       }
-      phaseMap[phaseId].itemCount++;
-      cleanItemId = `${phaseId.replace('phase-', '')}-${phaseMap[phaseId].itemCount}`;
     }
+    
+    // AUTO-CALCULATE: Increment item counter
+    itemCounter++;
+    
+    // AUTO-CALCULATE: Generate IDs based on ID field
+    const phaseId = `Phase-${id}`;
+    const itemId = `${id}-${itemCounter}`;
+    const phaseTitle = `Phase ${id}: ${currentPhaseTitle}`;
     
     // Create phase if it doesn't exist
     if (!phaseMap[phaseId]) {
       phaseMap[phaseId] = {
         id: phaseId,
         title: phaseTitle,
-        sections: {},
-        itemCount: 0
+        sections: {}
       };
       phases.push(phaseMap[phaseId]);
     }
@@ -499,9 +518,9 @@ function getPhases(sheet) {
       };
     }
     
-    // Create item
-    const item = {
-      id: cleanItemId,
+    // Create item object
+    const itemData = {
+      id: itemId,
       text: itemText,
       tooltip: tooltip,
       links: []
@@ -509,19 +528,19 @@ function getPhases(sheet) {
     
     // Add responsible if provided
     if (responsible) {
-      item.responsible = responsible;
+      itemData.responsible = responsible;
     }
     
     // Add required flag if true
     if (required === true || required === 'TRUE' || required === 'Yes' || required === 'YES' || required === 'yes') {
-      item.required = true;
+      itemData.required = true;
     }
     
     // Add primary link if provided
     const linkText = String(row[colIndex.link_text] || '');
     const linkUrl = String(row[colIndex.link_url] || '');
     if (linkText && linkUrl) {
-      item.links.push({
+      itemData.links.push({
         text: linkText,
         url: linkUrl
       });
@@ -538,7 +557,7 @@ function getPhases(sheet) {
         const additionalLinkUrl = String(row[colIndex[urlCol]] || '');
         
         if (additionalLinkText && additionalLinkUrl) {
-          item.links.push({
+          itemData.links.push({
             text: additionalLinkText,
             url: additionalLinkUrl
           });
@@ -547,95 +566,109 @@ function getPhases(sheet) {
     }
     
     // Add item to section
-    phaseMap[phaseId].sections[sectionKey].items.push(item);
+    phaseMap[phaseId].sections[sectionKey].items.push(itemData);
   }
   
-  // Convert sections object to array and clean up
+  // Convert sections object to array
   phases.forEach(phase => {
     phase.sections = Object.values(phase.sections);
-    delete phase.itemCount; // Remove temporary counter
   });
   
   return phases;
 }
 
 /**
- * Validate sheet structure
+ * Helper function to derive phase name from section title or ID
+ * For the first section of each phase
  */
-function validateSheets() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
-  const messages = [];
+function getPhaseNameFromSection(sectionTitle) {
+  // Define mappings based on common patterns in your data
+  const mappings = {
+    // Project phases
+    'Project Initiation': 'Project Initiation',
+    'Both MAP & MAP Lite': 'Project Initiation',
+    'MAP Only': 'MAP Specific Requirements',
+    'MAP Lite Specific': 'MAP Lite Requirements',
+    
+    // Main phases
+    'Assess': 'Assessment',
+    'Mobilize': 'Mobilization',
+    'Migrate': 'Migration',
+    'Modernize': 'Modernization',
+    
+    // OLA/Blueprint phases
+    'Blueprint': 'Blueprint Optimization (OLA)',
+    'OLA': 'Blueprint Optimization (OLA)',
+    'Optimization': 'Blueprint Optimization (OLA)',
+    
+    // Financial phases
+    'Fund Request': 'Fund Request',
+    'Fund Claim': 'Fund Claim',
+    
+    // Closeout
+    'Closeout': 'Project Closeout',
+    'Project Closeout': 'Project Closeout',
+    
+    // Add more mappings as needed based on your data
+  };
   
-  // Check Metadata sheet
-  const metadataSheet = ss.getSheetByName('Metadata');
-  if (!metadataSheet) {
-    messages.push('❌ Metadata sheet not found');
-  } else {
-    const headers = metadataSheet.getRange(1, 1, 1, 2).getValues()[0];
-    if (headers[0] !== 'Field' || headers[1] !== 'Value') {
-      messages.push('⚠️ Metadata sheet headers should be: Field, Value');
-    } else {
-      messages.push('✅ Metadata sheet structure is correct');
+  // Check for exact matches first
+  if (mappings[sectionTitle]) {
+    return mappings[sectionTitle];
+  }
+  
+  // Check for partial matches
+  for (const [key, value] of Object.entries(mappings)) {
+    if (sectionTitle.toLowerCase().includes(key.toLowerCase())) {
+      return value;
     }
   }
   
-  // Check Resources sheet
-  const resourcesSheet = ss.getSheetByName('Resources');
-  if (!resourcesSheet) {
-    messages.push('❌ Resources sheet not found');
-  } else {
-    const headers = resourcesSheet.getRange(1, 1, 1, 3).getValues()[0];
-    if (headers[0] !== 'title' || headers[1] !== 'url' || headers[2] !== 'description') {
-      messages.push('⚠️ Resources sheet headers should be: title, url, description');
-    } else {
-      messages.push('✅ Resources sheet structure is correct');
-    }
+  // Default: use the section title as is
+  return sectionTitle;
+}
+
+/**
+ * Test function to verify the script is working
+ * Run this in the Apps Script editor to test
+ */
+function testGetPhases() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    const phases = getPhases(sheet);
+    
+    console.log('Total phases:', phases.length);
+    
+    phases.forEach(phase => {
+      console.log(`\nPhase: ${phase.title} (${phase.id})`);
+      phase.sections.forEach(section => {
+        console.log(`  Section: ${section.title}`);
+        console.log(`  Items: ${section.items.length}`);
+      });
+    });
+    
+    // Test metadata
+    const metadata = getMetadata(ss);
+    console.log('\nMetadata:', metadata);
+    
+    // Test resources
+    const resources = getResources(ss);
+    console.log('\nResources:', resources);
+    
+    return { phases, metadata, resources };
+  } catch (error) {
+    console.error('Test error:', error);
+    throw error;
   }
-  
-  // Check Checklist sheet
-  const checklistSheet = ss.getSheetByName('Checklist');
-  if (!checklistSheet) {
-    messages.push('❌ Checklist sheet not found');
-  } else {
-    const headers = checklistSheet.getDataRange().getValues()[0];
-    const requiredHeaders = [
-      'phase_id', 'phase_title', 'section_title', 'applicability',
-      'item_id', 'item_text', 'tooltip', 'required', 'link_text', 'link_url'
-    ];
-    
-    const optionalHeaders = [
-      'responsible',
-      'link_text_2', 'link_url_2',
-      'link_text_3', 'link_url_3',
-      'link_text_4', 'link_url_4'
-    ];
-    
-    const missingHeaders = requiredHeaders.filter(h => !headers.includes(h));
-    const presentOptionalHeaders = optionalHeaders.filter(h => headers.includes(h));
-    
-    if (missingHeaders.length > 0) {
-      messages.push(`⚠️ Checklist sheet missing headers: ${missingHeaders.join(', ')}`);
-    } else {
-      messages.push('✅ Checklist sheet structure is correct');
-    }
-    
-    if (presentOptionalHeaders.length > 0) {
-      messages.push(`ℹ️ Optional columns found: ${presentOptionalHeaders.join(', ')}`);
-    } else {
-      messages.push('ℹ️ No optional columns found (responsible, link_text_2, link_url_2, etc.)');
-    }
-    
-    // Check for responsible column specifically
-    if (headers.includes('responsible')) {
-      messages.push('✅ Responsible column found');
-    } else if (headers.includes('Responsible')) {
-      messages.push('⚠️ Found "Responsible" column - should be lowercase "responsible"');
-    }
-  }
-  
-  SpreadsheetApp.getUi().alert(
-    'Sheet Validation Results',
-    messages.join('\n'),
-    SpreadsheetApp.getUi().ButtonSet.OK
-  );
+}
+
+/**
+ * Helper function to get current deployment URL
+ * Run this after deploying to get the URL for your HTML
+ */
+function getDeploymentUrl() {
+  const url = ScriptApp.getService().getUrl();
+  console.log('Deployment URL:', url);
+  return url;
 }
