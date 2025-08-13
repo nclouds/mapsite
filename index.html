@@ -1041,8 +1041,6 @@
                                         <span class="tooltip-text">${item.tooltip}</span>
                                     </span>
                                 ` : ''}
-                                <!-- Debug: Show raw applicability -->
-                                ${item.applicability ? `<span style="font-size: 10px; color: #999; margin-left: 10px;">[${item.applicability.join(', ') || 'empty'}]</span>` : '<span style="font-size: 10px; color: #999; margin-left: 10px;">[missing]</span>'}
                             </p>
                             ${item.links && item.links.length > 0 ? `
                                 <div class="item-links">
