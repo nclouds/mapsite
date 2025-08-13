@@ -925,13 +925,10 @@
                                 const visibleItems = section.items.filter(item => shouldShowItem(item));
                                 if (visibleItems.length === 0) return '';
                                 
-                                const applicabilityBadge = getApplicabilityBadge(section.applicability);
-                                
                                 return `
                                     <div class="section">
                                         <h3 class="section-title">
                                             ${section.title}
-                                            ${applicabilityBadge}
                                         </h3>
                                         <div>
                                             ${visibleItems.map(item => renderItem(item, section)).join('')}
