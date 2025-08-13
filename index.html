@@ -327,7 +327,7 @@
             border-bottom: 1px solid #f0f0f0;
         }
         
-        /* Applicability Icons */
+        /* Applicability Icons with Tooltips */
         .applicability-icon {
             font-size: 14px;
             margin-left: 6px;
@@ -343,6 +343,42 @@
         
         .applicability-icon.map {
             color: #1E40AF; /* Dark blue */
+        }
+        
+        /* Tooltip for applicability icons */
+        .applicability-tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            border-radius: 4px;
+            padding: 4px 8px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .applicability-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+        
+        .applicability-icon:hover .applicability-tooltip {
+            visibility: visible;
+            opacity: 1;
         }
         
         .guide-item:last-child {
@@ -977,11 +1013,11 @@
                                 ${item.text}
                                 ${item.responsible ? `<span class="responsible-badge">(${item.responsible})</span>` : ''}
                                 ${item.required ? '<span class="required-badge">Required</span>' : ''}
-                                ${applicability.includes('map-lite') ? '<span class="applicability-icon map-lite" title="MAP Lite">◇</span>' : ''}
-                                ${applicability.includes('map') ? '<span class="applicability-icon map" title="MAP">◆</span>' : ''}
+                                ${applicability.includes('map-lite') ? '<span class="applicability-icon map-lite">◇<span class="applicability-tooltip">MAP Lite</span></span>' : ''}
+                                ${applicability.includes('map') ? '<span class="applicability-icon map">◆<span class="applicability-tooltip">MAP</span></span>' : ''}
                                 ${item.tooltip ? `
                                     <span class="tooltip">
-                                        <span class="tooltip-icon">ⓘ</span>
+                                        <span class="tooltip-icon">ℹ️</span>
                                         <span class="tooltip-text">${item.tooltip}</span>
                                     </span>
                                 ` : ''}
