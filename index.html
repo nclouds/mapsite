@@ -321,6 +321,11 @@
             color: #065f46;
         }
         
+        .badge-ola {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
         /* Items */
         .guide-item {
             padding: 8px 0;
@@ -343,6 +348,10 @@
         
         .applicability-icon.map {
             color: #1E40AF; /* Dark blue */
+        }
+        
+        .applicability-icon.ola {
+            color: #10B981; /* Green */
         }
         
         /* Tooltip for applicability icons */
@@ -991,10 +1000,12 @@
         
         // Get applicability badge HTML
         function getApplicabilityBadge(applicability) {
-            if (applicability.includes('map') && !applicability.includes('map-lite')) {
+            if (applicability.includes('map') && !applicability.includes('map-lite') && !applicability.includes('ola')) {
                 return '<span class="badge badge-map">MAP Only</span>';
-            } else if (!applicability.includes('map') && applicability.includes('map-lite')) {
+            } else if (!applicability.includes('map') && applicability.includes('map-lite') && !applicability.includes('ola')) {
                 return '<span class="badge badge-lite">MAP Lite Only</span>';
+            } else if (!applicability.includes('map') && !applicability.includes('map-lite') && applicability.includes('ola')) {
+                return '<span class="badge badge-ola">OLA Only</span>';
             }
             return '';
         }
@@ -1015,6 +1026,7 @@
                                 ${item.required ? '<span class="required-badge">Required</span>' : ''}
                                 ${applicability.includes('map-lite') ? '<span class="applicability-icon map-lite">◇<span class="applicability-tooltip">MAP Lite</span></span>' : ''}
                                 ${applicability.includes('map') ? '<span class="applicability-icon map">◆<span class="applicability-tooltip">MAP</span></span>' : ''}
+                                ${applicability.includes('ola') ? '<span class="applicability-icon ola">○<span class="applicability-tooltip">OLA</span></span>' : ''}
                                 ${item.tooltip ? `
                                     <span class="tooltip">
                                         <span class="tooltip-icon">ℹ️</span>
