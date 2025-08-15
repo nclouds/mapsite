@@ -5,6 +5,79 @@ const METADATA_SHEET_NAME = 'Metadata'; // Name of the sheet containing metadata
 const RESOURCES_SHEET_NAME = 'Resources'; // Name of the sheet containing resources
 const SECURITY_TOKEN = 'nclouds-map-2024'; // Security token for API access
 
+/**
+ * Debug function to check if items have applicability field
+ * Run this in the Apps Script editor after updating getPhases
+ */
+function debugItemApplicability() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    const phases = getPhases(sheet);
+    
+    console.log('=== CHECKING ITEM APPLICABILITY ===');
+    
+    phases.forEach(phase => {
+      console.log(`\nPhase: ${phase.title}`);
+      phase.sections.forEach(section => {
+        console.log(`  Section: ${section.title}`);
+        // Check first few items
+        const itemsToCheck = section.items.slice(0, 3);
+        itemsToCheck.forEach(item => {
+          console.log(`    Item ${item.id}:`);
+          console.log(`      - has applicability field: ${item.hasOwnProperty('applicability')}`);
+          console.log(`      - applicability value: ${JSON.stringify(item.applicability)}`);
+          console.log(`      - type: ${typeof item.applicability}`);
+        });
+      });
+    });
+    
+    // Also check the full response that would be sent
+    const response = {
+      phases: phases,
+      metadata: { version: '1.0' },
+      resources: []
+    };
+    
+    console.log('\n=== SAMPLE JSON OUTPUT ===');
+    console.log(JSON.stringify(response.phases[0].sections[0].items[0], null, 2));
+    
+  } catch (error) {
+    console.error('Debug error:', error);
+  }
+}
+
+/**
+ * Quick test to verify the deployment is returning correct data
+ */
+function testDeploymentResponse() {
+  const e = {
+    parameter: {
+      token: SECURITY_TOKEN,
+      callback: 'testCallback'
+    }
+  };
+  
+  const response = doGet(e);
+  const content = response.getContent();
+  
+  // Extract JSON from JSONP
+  const jsonStart = content.indexOf('(') + 1;
+  const jsonEnd = content.lastIndexOf(')');
+  const jsonData = content.substring(jsonStart, jsonEnd);
+  const data = JSON.parse(jsonData);
+  
+  // Check first item
+  if (data.phases && data.phases[0] && data.phases[0].sections && data.phases[0].sections[0] && data.phases[0].sections[0].items && data.phases[0].sections[0].items[0]) {
+    const firstItem = data.phases[0].sections[0].items[0];
+    console.log('First item structure:');
+    console.log(JSON.stringify(firstItem, null, 2));
+    console.log('Has applicability field:', firstItem.hasOwnProperty('applicability'));
+  } else {
+    console.log('Could not find first item in response');
+  }
+}
+
 function debugSheets() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   
@@ -404,7 +477,7 @@ function getResources(spreadsheet) {
 
 /**
  * Get phases using column headers with AUTO-CALCULATED values
- * Updated to read Phase column if it exists
+ * Updated to properly handle applicability at the item level
  */
 function getPhases(sheet) {
   if (!sheet) {
@@ -421,13 +494,14 @@ function getPhases(sheet) {
   
   // Required columns
   const requiredColumns = [
-    'ID', 'section_title', 'applicability', 
+    'ID', 'section_title', 
     'item_text', 'tooltip', 'required', 'link_text', 'link_url'
   ];
   
-  // Optional columns (added 'Phase')
+  // Optional columns
   const optionalColumns = [
-    'Phase',  // NEW: Optional Phase column
+    'applicability',  // Item-level applicability
+    'Phase',
     'responsible',
     'link_text_2', 'link_url_2',
     'link_text_3', 'link_url_3', 
@@ -463,13 +537,15 @@ function getPhases(sheet) {
     // Read values using column headers
     const id = String(row[colIndex.ID] || '');
     const sectionTitle = String(row[colIndex.section_title] || '');
-    const applicability = String(row[colIndex.applicability] || '');
     const itemText = String(row[colIndex.item_text] || '');
     const tooltip = String(row[colIndex.tooltip] || '');
     const required = row[colIndex.required];
     const responsible = colIndex.responsible !== undefined ? String(row[colIndex.responsible] || '') : '';
     
-    // NEW: Read Phase column if it exists
+    // Read applicability at item level
+    const applicability = colIndex.applicability !== undefined ? String(row[colIndex.applicability] || '') : '';
+    
+    // Read Phase column if it exists
     const phaseColumn = colIndex.Phase !== undefined ? String(row[colIndex.Phase] || '') : '';
     
     // Skip empty rows
@@ -513,18 +589,47 @@ function getPhases(sheet) {
     if (!phaseMap[phaseId].sections[sectionKey]) {
       phaseMap[phaseId].sections[sectionKey] = {
         title: sectionTitle,
-        applicability: applicability ? applicability.split(',').map(s => s.trim()) : ['map', 'map-lite'],
         items: []
       };
     }
     
-    // Create item object
+    // Create item object - ALWAYS include applicability field
     const itemData = {
       id: itemId,
       text: itemText,
       tooltip: tooltip,
-      links: []
+      links: [],
+      applicability: [] // ALWAYS include this field, default to empty array
     };
+    
+    // Parse applicability if provided
+    if (applicability && applicability.trim() !== '') {
+      // Split by comma and clean up each value
+      const appValues = applicability.split(',').map(s => s.trim().toLowerCase());
+      
+      // Convert to consistent format
+      const cleanedApplicability = [];
+      appValues.forEach(val => {
+        // Handle various possible values
+        if (val === 'map' || val === 'map only') {
+          cleanedApplicability.push('map');
+        } else if (val === 'map-lite' || val === 'map lite' || val === 'maplite' || val === 'lite') {
+          cleanedApplicability.push('map-lite');
+        } else if (val === 'ola') {
+          cleanedApplicability.push('ola');
+        } else if (val === 'both' || val === 'all') {
+          // If explicitly marked as both/all, add both MAP and MAP Lite
+          cleanedApplicability.push('map', 'map-lite');
+        }
+      });
+      
+      // Remove duplicates and update applicability
+      if (cleanedApplicability.length > 0) {
+        itemData.applicability = [...new Set(cleanedApplicability)];
+      }
+      // If no valid values found, keep empty array
+    }
+    // If no applicability specified, it remains as empty array []
     
     // Add responsible if provided
     if (responsible) {
@@ -532,7 +637,8 @@ function getPhases(sheet) {
     }
     
     // Add required flag if true
-    if (required === true || required === 'TRUE' || required === 'Yes' || required === 'YES' || required === 'yes') {
+    if (required === true || required === 'TRUE' || required === 'True' || 
+        required === 'Yes' || required === 'YES' || required === 'yes') {
       itemData.required = true;
     }
     
@@ -575,6 +681,40 @@ function getPhases(sheet) {
   });
   
   return phases;
+}
+
+// ADD this debug function to test the applicability parsing:
+function debugApplicability() {
+  try {
+    const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    const data = sheet.getDataRange().getValues();
+    const headers = data[0];
+    
+    // Find applicability column
+    const appIndex = headers.indexOf('applicability');
+    if (appIndex === -1) {
+      console.log('No applicability column found');
+      return;
+    }
+    
+    console.log('=== APPLICABILITY VALUES ===');
+    const uniqueValues = new Set();
+    
+    for (let i = 1; i < data.length; i++) {
+      const appValue = String(data[i][appIndex] || '').trim();
+      if (appValue) {
+        uniqueValues.add(appValue);
+        console.log(`Row ${i+1}: "${appValue}"`);
+      }
+    }
+    
+    console.log('\n=== UNIQUE VALUES ===');
+    uniqueValues.forEach(val => console.log(`"${val}"`));
+    
+  } catch (error) {
+    console.error('Debug error:', error);
+  }
 }
 
 /**
