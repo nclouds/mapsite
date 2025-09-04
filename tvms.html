@@ -30,7 +30,6 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
             padding: 60px;
             position: relative;
-            overflow: hidden;
         }
         
         .container::before {
@@ -79,12 +78,24 @@
             border-radius: 16px;
             border: 2px solid #e2e8f0;
             transition: all 0.3s ease;
+            cursor: pointer;
+            height: 200px;
         }
         
         .step:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border-color: #ff9500;
+        }
+        
+        .step.expanded {
+            grid-column: 1 / -1;
+            background: #2d3748;
+            color: white;
+            height: auto;
+            min-height: 300px;
+            transform: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
         
         .step-number {
@@ -109,13 +120,23 @@
             font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 12px;
-            padding-right: 20px;
+            padding-right: 60px;
+        }
+        
+        .step.expanded .step-title {
+            color: #ff9500;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
         }
         
         .step-description {
             color: #4a5568;
             line-height: 1.6;
             font-size: 0.95rem;
+        }
+        
+        .step.expanded .step-description {
+            display: none;
         }
         
         .step-icon {
@@ -127,22 +148,72 @@
             opacity: 0.1;
         }
         
-        /* Connection lines */
-        .connection-line {
-            position: absolute;
-            width: 2px;
-            height: 30px;
-            background: linear-gradient(to bottom, #ff9500, #ff6b35);
-            left: 50%;
-            transform: translateX(-50%);
+        .detailed-content {
+            display: none;
+            margin-top: 20px;
         }
         
-        .horizontal-line {
+        .step.expanded .detailed-content {
+            display: block;
+        }
+        
+        .detailed-title {
+            color: #ff9500;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .detailed-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        
+        .detailed-list li {
+            color: #e2e8f0;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid #ff9500;
+            position: relative;
+        }
+        
+        .detailed-list li::before {
+            content: '✓';
+            color: #ff9500;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .close-btn {
             position: absolute;
-            height: 2px;
-            background: linear-gradient(to right, #ff9500, #ff6b35);
-            top: 50%;
-            transform: translateY(-50%);
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 149, 0, 0.2);
+            color: #ff9500;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .step.expanded .close-btn {
+            display: flex;
+        }
+        
+        .close-btn:hover {
+            background: rgba(255, 149, 0, 0.3);
         }
         
         .footer {
@@ -169,6 +240,10 @@
                 grid-template-columns: 1fr;
             }
             
+            .detailed-list {
+                grid-template-columns: 1fr;
+            }
+            
             .container {
                 padding: 40px 20px;
             }
@@ -176,16 +251,6 @@
             h1 {
                 font-size: 2rem;
             }
-        }
-        
-        /* Icons for each step */
-        .icon {
-            position: absolute;
-            top: 25px;
-            right: 25px;
-            width: 40px;
-            height: 40px;
-            opacity: 0.15;
         }
     </style>
 </head>
@@ -195,76 +260,180 @@
         <p class="subtitle">A structured approach refined through hundreds of successful migrations, incorporating best practices to minimize risk and maximize value</p>
         
         <div class="steps-container">
-            <div class="step">
+            <div class="step" data-step="1">
                 <div class="step-number">1</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1h-15V5h15v14.1zm0-16.1h-15c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>
                 </svg>
                 <h3 class="step-title">Discovery & Assessment</h3>
                 <p class="step-description">Comprehensive environment analysis with cost optimization opportunities. Compliance programs including CMMC/FedRAMP evaluation</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Detailed Discovery Process</h4>
+                    <ul class="detailed-list">
+                        <li>Application portfolio inventory and dependency mapping</li>
+                        <li>Infrastructure assessment and performance analysis</li>
+                        <li>Security posture evaluation and gap analysis</li>
+                        <li>Cost optimization and ROI projections</li>
+                        <li>CMMC/FedRAMP compliance readiness assessment</li>
+                        <li>Risk mitigation strategy development</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="2">
                 <div class="step-number">2</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1.93.66 1.64 2.08 1.64 1.51 0 2.2-.63 2.2-1.51 0-.83-.44-1.31-2.05-1.84-1.79-.59-3.16-1.23-3.16-3.25 0-1.79 1.29-2.79 2.76-3.12V5h2.67v1.61c1.48.39 2.75 1.31 2.83 3.41h-1.96c-.1-1.07-.58-1.59-1.78-1.59-1.28 0-1.98.51-1.98 1.38 0 .83.58 1.23 2.07 1.72 1.64.51 3.16 1.15 3.16 3.2-.01 1.71-1.33 2.95-3.08 3.36z"/>
                 </svg>
                 <h3 class="step-title">Financial Optimization</h3>
                 <p class="step-description">ReluTech hardware valuation and buyback execution to fund your migration</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Maximize Your Migration Investment</h4>
+                    <ul class="detailed-list">
+                        <li>Professional hardware valuation and audit</li>
+                        <li>Competitive buyback pricing for existing equipment</li>
+                        <li>Funding strategies to offset migration costs</li>
+                        <li>Hardware lifecycle management consulting</li>
+                        <li>Tax benefit optimization for equipment disposal</li>
+                        <li>Seamless asset removal and data destruction</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="3">
                 <div class="step-number">3</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2l-5.5 9h11z M12 5.84L13.93 9h-3.87z M17.5 13c-2.49 0-4.5 2.01-4.5 4.5s2.01 4.5 4.5 4.5 4.5-2.01 4.5-4.5-2.01-4.5-4.5-4.5z M5 21.5h8v-8H5v8z"/>
                 </svg>
                 <h3 class="step-title">Cloud Architecture Design</h3>
                 <p class="step-description">AWS-optimized infrastructure aligned with business goals and compliance frameworks</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Enterprise-Grade Architecture</h4>
+                    <ul class="detailed-list">
+                        <li>Well-Architected Framework implementation</li>
+                        <li>Multi-account strategy and governance design</li>
+                        <li>Security-first architecture with zero-trust principles</li>
+                        <li>High availability and disaster recovery planning</li>
+                        <li>Cost-optimized resource sizing and selection</li>
+                        <li>Scalability and performance optimization</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="4">
                 <div class="step-number">4</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
                 </svg>
                 <h3 class="step-title">Landing Zone Build-Out</h3>
                 <p class="step-description">Secure, scalable AWS foundation with best practices and MontyCloud governance</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Production-Ready Foundation</h4>
+                    <ul class="detailed-list">
+                        <li>AWS Control Tower implementation and customization</li>
+                        <li>Multi-account structure with organizational units</li>
+                        <li>Identity and access management (IAM) strategy</li>
+                        <li>Network architecture and VPC design</li>
+                        <li>Security baseline with guardrails and policies</li>
+                        <li>Monitoring, logging, and compliance frameworks</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="5">
                 <div class="step-number">5</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
                 </svg>
                 <h3 class="step-title">Wave Planning</h3>
                 <p class="step-description">Strategic workload prioritization and dependency mapping with compliance considerations</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Risk-Minimized Migration Strategy</h4>
+                    <ul class="detailed-list">
+                        <li>Application dependency analysis and mapping</li>
+                        <li>Migration wave prioritization based on complexity</li>
+                        <li>Business impact assessment and downtime planning</li>
+                        <li>Resource allocation and timeline development</li>
+                        <li>Rollback and contingency planning</li>
+                        <li>Stakeholder communication and change management</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="6">
                 <div class="step-number">6</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
                 </svg>
                 <h3 class="step-title">Migration & Modernization</h3>
                 <p class="step-description">Automated migration with minimal disruption and compliance validation</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Advanced Migration Execution</h4>
+                    <ul class="detailed-list">
+                        <li>Automated migration tools and orchestration</li>
+                        <li>Application modernization and containerization</li>
+                        <li>Database migration with minimal downtime</li>
+                        <li>Real-time synchronization and cutover</li>
+                        <li>Performance optimization and tuning</li>
+                        <li>Continuous compliance monitoring</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="7">
                 <div class="step-number">7</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
                 <h3 class="step-title">Post-Migration Validation</h3>
                 <p class="step-description">Comprehensive testing and performance verification with security framework alignment. Well Architected and FinOps review.</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Excellence & Optimization Validation</h4>
+                    <ul class="detailed-list">
+                        <li>End-to-end functional and performance testing</li>
+                        <li>Security posture validation and penetration testing</li>
+                        <li>Well-Architected Review across all five pillars</li>
+                        <li>FinOps cost optimization and right-sizing analysis</li>
+                        <li>Compliance certification and audit preparation</li>
+                        <li>Knowledge transfer and documentation handoff</li>
+                    </ul>
+                </div>
             </div>
             
-            <div class="step">
+            <div class="step" data-step="8">
                 <div class="step-number">8</div>
-                <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                <button class="close-btn">×</button>
+                <svg class="step-icon" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
                 </svg>
                 <h3 class="step-title">Operate and Innovate</h3>
                 <p class="step-description">Seamless handoff to our award-winning MSP team with 90-day free trial and ongoing optimization supported by continued DevOps</p>
+                
+                <div class="detailed-content">
+                    <h4 class="detailed-title">Ongoing Excellence & Support</h4>
+                    <ul class="detailed-list">
+                        <li>90-day free managed services trial period</li>
+                        <li>24/7 monitoring and incident response</li>
+                        <li>Continuous optimization and cost management</li>
+                        <li>DevOps automation and CI/CD pipeline support</li>
+                        <li>Regular performance and security reviews</li>
+                        <li>Innovation workshops and technology roadmapping</li>
+                    </ul>
+                </div>
             </div>
         </div>
         
@@ -273,5 +442,39 @@
             <p>Transform your VMware challenges into AWS opportunities with our proven process</p>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const steps = document.querySelectorAll('.step');
+            
+            steps.forEach(step => {
+                const closeBtn = step.querySelector('.close-btn');
+                
+                // Click to expand
+                step.addEventListener('click', function(e) {
+                    if (e.target === closeBtn) return;
+                    
+                    // Close any other expanded steps
+                    steps.forEach(s => s.classList.remove('expanded'));
+                    
+                    // Expand this step
+                    step.classList.add('expanded');
+                });
+                
+                // Close button
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    step.classList.remove('expanded');
+                });
+            });
+            
+            // Close when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.step')) {
+                    steps.forEach(s => s.classList.remove('expanded'));
+                }
+            });
+        });
+    </script>
 </body>
 </html>
