@@ -298,6 +298,10 @@
         .legend-icon.ola {
             color: #10B981;
         }
+
+        .legend-icon.eba {
+            color: #8B5CF6;
+        }
         
         /* Phases */
         .phase {
@@ -389,6 +393,11 @@
             background: #fef3c7;
             color: #92400e;
         }
+
+        .badge-eba {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
         
         /* Items */
         .guide-item {
@@ -416,6 +425,10 @@
         
         .applicability-icon.ola {
             color: #10B981; /* Green */
+        }
+
+        .applicability-icon.eba {
+            color: #8B5CF6; /* Purple */
         }
         
         /* Tooltip for applicability icons */
@@ -872,8 +885,8 @@
         // Check if section should be shown based on project type
         function shouldShowSection(section) {
             if (projectType === 'both') return true;
-            
-            // Check if any items in the section match the project type
+
+            // Check if any items in the section match the project type (including EBA)
             return section.items.some(item => {
                 // If item has no applicability defined, don't show it in filtered views
                 if (!item.applicability || item.applicability.length === 0) {
@@ -883,10 +896,10 @@
                 return itemApplicability.includes(projectType);
             });
         }
-        
+
         // Check if item should be shown based on filters
         function shouldShowItem(item) {
-            // Project type filter
+            // Project type filter (now includes EBA)
             if (projectType !== 'both') {
                 // If item has no applicability defined, don't show it in filtered views
                 if (!item.applicability || item.applicability.length === 0) {
@@ -948,6 +961,7 @@
                         <option value="map">◆ MAP Only ($500K-$10M)</option>
                         <option value="map-lite">◇ MAP Lite ($100K-$500K)</option>
                         <option value="ola">○ OLA</option>
+                        <option value="eba">△ EBA</option>
                     </select>
                     
                     ${allResponsibleParties.length > 0 ? `
@@ -988,6 +1002,10 @@
                             <div class="legend-item">
                                 <span class="legend-icon ola">○</span>
                                 <span>OLA</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-icon eba">△</span>
+                                <span>EBA</span>
                             </div>
                         </div>
                         
@@ -1128,6 +1146,8 @@
                 return '<span class="badge badge-lite">MAP Lite Only</span>';
             } else if (!applicability.includes('map') && !applicability.includes('map-lite') && applicability.includes('ola')) {
                 return '<span class="badge badge-ola">OLA Only</span>';
+            } else if (!applicability.includes('map') && !applicability.includes('map-lite') && !applicability.includes('ola') && applicability.includes('eba')) {
+                return '<span class="badge badge-eba">EBA Only</span>';
             }
             return '';
         }
@@ -1154,6 +1174,7 @@
                                 ${applicability.includes('map-lite') ? '<span class="applicability-icon map-lite">◇<span class="applicability-tooltip">MAP Lite</span></span>' : ''}
                                 ${applicability.includes('map') ? '<span class="applicability-icon map">◆<span class="applicability-tooltip">MAP</span></span>' : ''}
                                 ${applicability.includes('ola') ? '<span class="applicability-icon ola">○<span class="applicability-tooltip">OLA</span></span>' : ''}
+                                ${applicability.includes('eba') ? '<span class="applicability-icon eba">△<span class="applicability-tooltip">EBA</span></span>' : ''}
                                 ${item.tooltip ? `
                                     <span class="tooltip">
                                         <span class="tooltip-icon">ⓘ</span>

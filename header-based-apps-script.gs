@@ -5,6 +5,25 @@ const METADATA_SHEET_NAME = 'Metadata'; // Name of the sheet containing metadata
 const RESOURCES_SHEET_NAME = 'Resources'; // Name of the sheet containing resources
 const SECURITY_TOKEN = 'nclouds-map-2024'; // Security token for API access
 
+function getVersionName() {
+  var file = SpreadsheetApp.getActiveSpreadsheet();
+  var revisions = Drive.Revisions.list(file.getId());
+  
+  if (revisions && revisions.items) {
+    var namedRevisions = revisions.items.filter(function(r) {
+      return r.name;
+    });
+
+    if (namedRevisions.length > 0) {
+      return namedRevisions[0].name; 
+    } else {
+      return "No named versions found.";
+    }
+  } else {
+    return "No revisions found for this file.";
+  }
+}
+
 /**
  * Debug function to check if items have applicability field
  * Run this in the Apps Script editor after updating getPhases
@@ -617,6 +636,8 @@ function getPhases(sheet) {
           cleanedApplicability.push('map-lite');
         } else if (val === 'ola') {
           cleanedApplicability.push('ola');
+        } else if (val === 'eba') {
+          cleanedApplicability.push('eba');
         } else if (val === 'both' || val === 'all') {
           // If explicitly marked as both/all, add both MAP and MAP Lite
           cleanedApplicability.push('map', 'map-lite');
